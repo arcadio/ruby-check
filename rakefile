@@ -1,0 +1,49 @@
+require 'rubygems'
+require 'spec/rake/spectask'
+
+
+RAKE = Spec::Rake
+
+GEM_DIR = '/opt/local/lib/ruby'
+DOC_DIR = 'doc'
+SPEC_DIR = 'spec'
+SRC_DIR = 'src'
+
+SPEC = FileList["#{SPEC_DIR}/*.rb"]
+SPEC_DOC = "#{DOC_DIR}/spec/spec.html"
+RCOV_DOC = "#{DOC_DIR}/rcov"
+EXCLUDE_RCOV = "#{SPEC_DIR},#{GEM_DIR}"
+
+
+def common_opts(t)
+  t.spec_files = SPEC
+  t.libs = [SPEC_DIR, SRC_DIR]
+end
+
+desc 'Default build'
+task :default => :spec
+
+desc 'Nightly build'
+task :nightly => [:doc_spec, :rcov_spec]
+
+desc 'Run all RSpec'
+RAKE::SpecTask.new do |t|
+  common_opts(t)
+end
+
+desc 'Run all RSpec and generate report'
+RAKE::SpecTask.new do |t|
+  t.name = :doc_spec
+  # The formatter is broken
+  # t.spec_opts = ['--format', "html:#{SPEC_DOC}"]
+  common_opts(t)
+end
+
+desc 'Run all RSpec with RCov and generate report'
+RAKE::SpecTask.new do |t|
+  t.name = :rcov_spec
+  t.rcov = true
+  t.rcov_dir = RCOV_DOC
+  t.rcov_opts = ['--exclude', EXCLUDE_RCOV]
+  common_opts(t)
+end
