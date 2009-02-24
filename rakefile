@@ -34,8 +34,7 @@ end
 desc 'Run all RSpec and generate report'
 RAKE::SpecTask.new do |t|
   t.name = :doc_spec
-  # The formatter is broken
-  # t.spec_opts = ['--format', "html:#{SPEC_DOC}"]
+  t.spec_opts = ['--format', "html", "> #{SPEC_DOC}"]
   common_opts(t)
 end
 
