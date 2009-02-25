@@ -18,6 +18,10 @@ class Property
   end
 
   def predicate(&expr)
+    self.pred = expr
+  end
+
+  def pred=(expr)
     ts = @types.size
     pa = expr.arity != -1 ? expr.arity : 0
     if ts != pa
@@ -32,7 +36,7 @@ class Property
   def dump_s(sig)
     if sig.is_a?(Hash)
       dump_h(sig)
-    elsif sig.is_a?(Symbol)
+    elsif sig.respond_to? :hash
       [sig, []]
     else
       raise ArgumentError.new("Incorrect property signature")

@@ -21,7 +21,7 @@ module PropertySpec
       p.pred.call("aa").should be_true
     end
 
-    it 'should not accept a simple property with incorrect arity' do
+    it 'should reject a simple property with incorrect arity' do
       lambda do
         property :p3 => [String] do |a, b|
           a + b == (b + a).reverse
@@ -29,7 +29,7 @@ module PropertySpec
       end.should raise_error(ArgumentError)
     end
 
-    it 'should not accept a complex property with incorrect arity' do
+    it 'should reject a complex property with incorrect arity' do
       lambda do
         property :p4 => [String] do |a, b|
           predicate { |a, b| a + b == (b + a).reverse }
@@ -44,6 +44,14 @@ module PropertySpec
       p.key.should == :p5
       p.types.should == []
       p.pred.call.should be_true
+    end
+
+    it 'should reject a property with a long hash in its signature' do
+      lambda do
+        property :p6 => String, :p7 => [String] do |a|
+          a.length == a.size
+        end
+      end.should raise_error(ArgumentError)
     end
   end
 end
