@@ -2,14 +2,25 @@ require 'property'
 
 
 module PropertySpec
-  describe 'property' do
+  describe 'Property' do
+    before(:all) do
+      Property.reset
+    end
+
+    after(:all) do
+      Property.reset
+    end
+
     it 'should accept a simple property with correct arity' do
       p = property :p1 => [String, String] do |a, b|
         a + b == (b + a).reverse
       end
       p.key.should == :p1
       p.types.should == [String, String]
-      p.pred.call("a", "b").should be_true
+      args = ["a", "b"]
+      p.pred.call(*args).should be_true
+      Property.p1(*args).should be_true
+      Property.respond_to?(:p1).should be_true
     end
 
     it 'should accept a complex property with correct arity' do
@@ -18,7 +29,10 @@ module PropertySpec
       end
       p.key.should == :p2
       p.types.should == [String]
+      args = "aa"
       p.pred.call("aa").should be_true
+      Property.p2(args).should be_true
+      Property.respond_to?(:p2).should be_true
     end
 
     it 'should reject a simple property with incorrect arity' do
@@ -44,6 +58,8 @@ module PropertySpec
       p.key.should == :p5
       p.types.should == []
       p.pred.call.should be_true
+      Property.p5.should be_true
+      Property.respond_to?(:p5).should be_true
     end
 
     it 'should reject a property with a long hash in its signature' do
@@ -52,6 +68,27 @@ module PropertySpec
           a.length == a.size
         end
       end.should raise_error(ArgumentError)
+    end
+
+    it 'should not recognise an undeclared property' do
+      lambda { Property.p9 }.should raise_error(NoMethodError)
+      Property.respond_to?(:p9).should be_false
+    end
+
+    it 'should reject properties with non-Symbol values as keys' do
+      lambda { property(1) {} }.should raise_error(ArgumentError)
+      lambda { property(1 => String) {} }.should raise_error(ArgumentError)
+    end
+
+    it 'should reject properties without a defined predicate' do
+      lambda { property(:p10 => String) {} }.should raise_error(RuntimeError)
+    end
+
+    it 'should process correctly wrong argument number calls' do
+      property :p11 => String do |a|
+        a.length == a.size
+      end
+      lambda { Property.p11("a", "b").should raise_error(ArgumentError) }
     end
   end
 end

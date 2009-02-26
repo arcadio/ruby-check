@@ -6,7 +6,30 @@ end
 
 
 class Property
-  attr_reader :key, :types, :pred
+  @@pp = {}
+
+  def self.reset
+    @@pp = {}
+  end
+
+  def self.method_missing(name, *args, &block)
+    if @@pp.has_key?(name)
+      as = args.size
+      arity = @@pp[name].arity
+      if as != arity
+        raise ArgumentError, "wrong number of arguments (#{as} for #{arity})"
+      end
+      @@pp[name].pred.call(*args)
+    else
+      super
+    end
+  end
+
+  def self.respond_to?(name, include_private = false)
+    @@pp.has_key?(name) ? true : super
+  end
+
+  attr_reader :key, :types, :pred, :arity
 
   def initialize(sig, &block)
     @key, @types = dump_s(sig)
@@ -14,7 +37,9 @@ class Property
       predicate(&block)
     else
       instance_eval(&block)
+      raise "Property predicate should be defined" if pred.nil?
     end
+    @@pp[key] = self
   end
 
   def predicate(&expr)
@@ -23,10 +48,9 @@ class Property
 
   def pred=(expr)
     ts = @types.size
-    pa = expr.arity != -1 ? expr.arity : 0
-    if ts != pa
-      raise ArgumentError.new("The number of types (#{ts}) doesn't" +
-                              " match the arity (#{pa}) of the predicate")
+    @arity = expr.arity != -1 ? expr.arity : 0
+    if ts != @arity
+      raise ArgumentError, "wrong number of types (#{ts} for #{@arity})"
     end
     @pred = expr
   end
@@ -36,16 +60,16 @@ class Property
   def dump_s(sig)
     if sig.is_a?(Hash)
       dump_h(sig)
-    elsif sig.respond_to? :hash
+    elsif sig.is_a?(Symbol)
       [sig, []]
     else
-      raise ArgumentError.new("Incorrect property signature")
+      raise ArgumentError, "incorrect property signature"
     end
   end
 
   def dump_h(hash)
-    if hash.size != 1
-      raise ArgumentError.new("Incorrect property signature")
+    if hash.size != 1 or !hash.keys.first.is_a?(Symbol)
+      raise ArgumentError, "incorrect property signature"
     end
     ary = hash.to_a
     types = ary.first.last
