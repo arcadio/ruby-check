@@ -2,7 +2,7 @@ require 'property'
 
 
 module PropertySpec
-  describe 'Property' do
+  describe Property do
     before(:all) do
       Property.reset
     end
@@ -29,8 +29,8 @@ module PropertySpec
       end
       p.key.should == :p2
       p.types.should == [String]
-      args = "aa"
-      p.pred.call("aa").should be_true
+      args = 'aa'
+      p.pred.call(args).should be_true
       Property.p2(args).should be_true
       Property.respond_to?(:p2).should be_true
     end

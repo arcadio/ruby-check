@@ -1,12 +1,13 @@
+require 'property'
 require 'rubygems'
 require 'sqlite3'
 
 
 class Database
-  attr_reader :db
+  attr_reader :driver
 
   def initialize(file)
-    @db = SQLite3::Database.new(file, :type_translation => true)
+    @driver = SQLite3::Database.new(file, :type_translation => true)
     create_schema
     prepare_statements
   end
@@ -25,10 +26,10 @@ class Database
         input BLOB NOT NULL,
         time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
 SQL
-    @db.execute_batch(sql)
+    @driver.execute_batch(sql)
   end
 
   def prepare_statements
-    @ins = db.prepare("INSERT INTO error(property, input) VALUES (?, ?)")
+    @ins = driver.prepare('INSERT INTO error(property, input) VALUES (?, ?)')
   end
 end
