@@ -88,7 +88,7 @@ module PropertySpec
       property :p11 => String do |a|
         a.length == a.size
       end
-      lambda { Property.p11("a", "b").should raise_error(ArgumentError) }
+      lambda { Property.p11("a", "b") }.should raise_error(ArgumentError)
     end
 
     it 'should reject a property without a block' do
