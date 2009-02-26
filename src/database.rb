@@ -24,7 +24,8 @@ class Database
       CREATE TABLE IF NOT EXISTS error(
         property VARCHAR(16) NOT NULL,
         input BLOB NOT NULL,
-        time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);
+        time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
 SQL
     @driver.execute_batch(sql)
   end

@@ -81,14 +81,18 @@ module PropertySpec
     end
 
     it 'should reject properties without a defined predicate' do
-      lambda { property(:p10 => String) {} }.should raise_error(RuntimeError)
+      lambda { property(:p10 => String) {} }.should raise_error(ArgumentError)
     end
 
-    it 'should process correctly wrong argument number calls' do
+    it 'should reject wrong argument number calls of properties' do
       property :p11 => String do |a|
         a.length == a.size
       end
       lambda { Property.p11("a", "b").should raise_error(ArgumentError) }
+    end
+
+    it 'should reject a property without a block' do
+      lambda { property :p12 }.should raise_error(ArgumentError)
     end
   end
 end

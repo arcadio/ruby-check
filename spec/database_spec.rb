@@ -26,10 +26,10 @@ module DatabaseSpec
       db.insert_error(p, "az_")
       db2 = Database.new(DB_FILE)
       r = db.driver.execute('SELECT * FROM error')
-      Marshal.load(r.first[1]).should == "az_"
+      Marshal.load(r.first[1]).should == 'az_'
     end
 
-    it "should create the schema when the database file exists but not the tables" do
+    it 'should create the schema when the database file exists but not the tables' do
       db = Database.new(DB_FILE)
       db.driver.execute('DROP TABLE error')
       db2 = Database.new(DB_FILE)

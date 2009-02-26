@@ -5,12 +5,12 @@ class Property
     @@pp = {}
   end
 
-  def self.method_missing(name, *args, &block)
+  def self.method_missing(name, *args)
     if @@pp.has_key?(name)
-      as = args.size
+      narg = args.size
       arity = @@pp[name].arity
-      if as != arity
-        raise ArgumentError, "wrong number of arguments (#{as} for #{arity})"
+      if narg != arity
+        raise ArgumentError, "wrong number of arguments (#{narg} for #{arity})"
       end
       @@pp[name].pred.call(*args)
     else
