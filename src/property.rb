@@ -1,4 +1,4 @@
-require 'property_class'
+require 'propertyclass'
 
 def desc(doc); end
 
