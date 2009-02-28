@@ -8,7 +8,7 @@ end
 
 
 class Property
-  attr_reader :key, :types, :pred, :arity
+  attr_reader :key, :types, :pred
 
   def initialize(signature, &block)
     raise ArgumentError, 'a block must be provided' if block.nil?
@@ -28,7 +28,7 @@ class Property
 
   def pred=(expr)
     ts = types.size
-    @arity = expr.arity != -1 ? expr.arity : 0
+    arity = expr.arity != -1 ? expr.arity : 0
     if ts != arity
       raise ArgumentError, "wrong number of types (#{ts} for #{arity})"
     end

@@ -8,7 +8,7 @@ class Property
   def self.method_missing(name, *args)
     if @@pp.has_key?(name)
       narg = args.size
-      arity = @@pp[name].arity
+      arity = @@pp[name].types.size
       if narg != arity
         raise ArgumentError, "wrong number of arguments (#{narg} for #{arity})"
       end
