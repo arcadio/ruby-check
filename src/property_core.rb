@@ -1,4 +1,5 @@
 require 'property_class'
+require 'property_cases'
 
 
 class Property

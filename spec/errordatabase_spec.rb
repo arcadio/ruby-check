@@ -1,13 +1,17 @@
 require 'error_database'
 require 'fileutils'
+require 'property_helpers'
 
 
 module ErrorDatabaseSpec
   describe ErrorDatabase do
+    include PropertyHelpers
+
     DB_FILE = 'errors.db'
 
+    it_should_behave_like 'Property'
+
     after(:each) do
-      Property.reset
       begin
         FileUtils::rm(DB_FILE)
       rescue Errno::ENOENT; end

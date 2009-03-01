@@ -1,15 +1,12 @@
 require 'property_analyzer'
+require 'property_helpers'
 
 
 module AnalyzerSpec
   describe PropertyAnalyzer do
-    before(:each) do
-      Property.reset
-    end
+    include PropertyHelpers
 
-    after(:each) do
-      Property.reset
-    end
+    it_should_behave_like 'Property'
 
     it 'should process correctly a simple property' do
       Bool = nil

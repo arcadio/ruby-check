@@ -1,15 +1,12 @@
 require 'property_language'
+require 'property_helpers'
 
 
 module PropertySpec
   describe Property do
-    before(:all) do
-      Property.reset
-    end
+    include PropertyHelpers
 
-    after(:all) do
-      Property.reset
-    end
+    it_should_behave_like 'Property'
 
     it 'should accept a simple property with correct arity' do
       p = property :p1 => [String, String] do |a, b|

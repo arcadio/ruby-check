@@ -5,6 +5,10 @@ class Property
     @@pp = {}
   end
 
+  def self.[](index)
+    @@pp[index]
+  end
+
   def self.method_missing(name, *args)
     if @@pp.has_key?(name)
       narg = args.size
