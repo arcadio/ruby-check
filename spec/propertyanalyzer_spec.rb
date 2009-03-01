@@ -1,4 +1,4 @@
-require 'analyzer'
+require 'property_analyzer'
 
 
 module AnalyzerSpec
@@ -12,9 +12,9 @@ module AnalyzerSpec
     end
 
     it 'should process correctly a simple property' do
-      PropertyAnalyzer.new(property :p => [String] do |a|
-        l = a.length
-        l >= 0
+      Bool = nil
+      PropertyAnalyzer.new(property :p => [Bool, Bool] do |a, b|
+        a | b | c
       end)
     end
   end

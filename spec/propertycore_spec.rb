@@ -1,4 +1,4 @@
-require 'property'
+require 'property_language'
 
 
 module PropertySpec
@@ -51,7 +51,7 @@ module PropertySpec
       end.should raise_error(ArgumentError)
     end
 
-    it 'should accept a simple property with arity = 0' do
+    it 'should accept a simple property with arity 0' do
       p = property :p5 do
         1 > 0
       end

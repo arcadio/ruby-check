@@ -1,4 +1,4 @@
-require 'property'
+require 'property_core'
 require 'rubygems'
 require 'parse_tree'
 require 'sexp_processor'
@@ -13,18 +13,13 @@ class PropertyAnalyzer < SexpProcessor
   end
 
   def process_iter(exp)
-    require 'pp'
-    # puts 'iter'
-    exp.shift
-    exp.shift
-    e = exp.shift
-    # pp e
-    process e
+    exp.shift # call proc
+    exp.shift # masgn params
+    process exp.shift # body
     s()
   end
 
   def process_block(exp)
-    # puts 'block'
     while !exp.empty?
       process exp.shift
     end
@@ -32,7 +27,6 @@ class PropertyAnalyzer < SexpProcessor
   end
 
   def process_call(exp)
-    # puts 'call'
     process exp.shift
     exp.shift # op
     process exp.shift

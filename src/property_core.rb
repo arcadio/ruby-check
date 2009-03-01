@@ -1,10 +1,4 @@
-require 'propertyclass'
-
-def desc(doc); end
-
-def property(sig, &block)
-  Property.new(sig, &block)
-end
+require 'property_class'
 
 
 class Property
@@ -26,6 +20,8 @@ class Property
     self.pred = expr
   end
 
+  private
+
   def pred=(expr)
     ts = types.size
     arity = expr.arity != -1 ? expr.arity : 0
@@ -34,8 +30,6 @@ class Property
     end
     @pred = expr
   end
-
-  private
 
   def dump_signature(signature)
     if signature.is_a?(Hash)

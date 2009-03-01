@@ -1,9 +1,9 @@
-require 'property'
+require 'property_core'
 require 'rubygems'
 require 'sqlite3'
 
 
-class Database
+class ErrorDatabase
   attr_reader :driver
 
   def initialize(file)
