@@ -17,9 +17,9 @@ class Property
     self.class[key] = self
   end
 
-  def predicate(&expr)
-    self.pred = expr
-  end
+  def predicate(&expr); self.pred = expr end
+
+  def arity; types.size end
 
   private
 

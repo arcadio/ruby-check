@@ -4,24 +4,24 @@ require 'forwardable'
 class Property
   extend SingleForwardable
 
-  def self.hash; @@pp ||= {} end
+  def self.pp; @@pp ||= {} end
 
-  def_delegators :hash, :[], :[]=, :has_key?, :clear
+  def_delegators :pp, :[], :[]=, :has_key?, :clear
 
   def self.method_missing(name, *args)
-    if hash.has_key?(name)
+    if pp.has_key?(name)
       narg = args.size
-      arity = hash[name].types.size
+      arity = pp[name].arity
       if narg != arity
         raise ArgumentError, "wrong number of arguments (#{narg} for #{arity})"
       end
-      hash[name].pred.call(*args)
+      pp[name].pred.call(*args)
     else
       super
     end
   end
 
   def self.respond_to?(name, include_private = false)
-    hash.has_key?(name) ? true : super
+    pp.has_key?(name) ? true : super
   end
 end
