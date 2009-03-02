@@ -14,7 +14,7 @@ class Property
       instance_eval(&block)
       raise ArgumentError, 'property predicate should be defined' if pred.nil?
     end
-    @@pp[key] = self
+    self.class[key] = self
   end
 
   def predicate(&expr)
