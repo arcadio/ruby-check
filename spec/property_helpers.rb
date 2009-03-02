@@ -4,11 +4,11 @@ require 'property_class'
 module PropertyHelpers
   shared_examples_for 'Property' do
     before(:each) do
-      Property.reset
+      Property.clear
     end
 
     after(:each) do
-      Property.reset
+      Property.clear
     end
   end
 end

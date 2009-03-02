@@ -1,13 +1,14 @@
+require 'forwardable'
+
+
 class Property
+  extend SingleForwardable
+
   @@pp = {}
 
-  def self.reset
-    @@pp = {}
-  end
+  def self.hash; @@pp end
 
-  def self.[](index)
-    @@pp[index]
-  end
+  def_delegators :hash, :[], :[]=, :has_key?, :clear
 
   def self.method_missing(name, *args)
     if @@pp.has_key?(name)

@@ -5,11 +5,11 @@ class Property
   attr_reader :cases
 
   def always_check(*cases)
-    cases.each(&:to_a)
+    c = cases.map { |e| e.is_a?(Array) ? e : [e] }
     arity = types.size
-    if cases.map { |e| e.size == arity }.inject(:&)
-      raise ArgumentError, "wrong number of cases for #{arity}"
+    unless c.map { |e| e.size == arity }.inject(:&)
+      raise ArgumentError, "wrong number of cases for arity #{arity}"
     end
-    @cases = cases
+    @cases = c
   end
 end
