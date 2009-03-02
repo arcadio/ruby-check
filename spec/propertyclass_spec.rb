@@ -33,5 +33,22 @@ module PropertyClassSpec
       lambda { Property.p(true) }.should raise_error(ArgumentError)
       Property[:p].should_not be_nil
     end
+
+    it 'should assign correctly the documenting description' do
+      property :p => String do |a|
+        a.length > 0
+      end
+      doc = 'Property for testing purposes'
+      desc doc
+      property :q => [Object, Object] do |a, b|
+        a & b
+      end
+      property :r => [Hash] do |a|
+        !a.nil?
+      end
+      Property[:p].desc.should be_nil
+      Property[:q].desc.should == doc
+      Property[:r].desc.should be_nil
+    end
   end
 end
