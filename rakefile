@@ -6,12 +6,13 @@ RAKE = Spec::Rake
 
 GEM_DIR = '/opt/local/lib/ruby'
 DOC_DIR = 'doc'
+RCOV_DIR = 'rcov'
 SPEC_DIR = 'spec'
 SRC_DIR = 'src'
 
 SPEC = FileList["#{SPEC_DIR}/*.rb"]
-SPEC_DOC = "#{DOC_DIR}/spec/spec.html"
-RCOV_DOC = "#{DOC_DIR}/rcov"
+SPEC_DOC = "#{DOC_DIR}/#{SPEC_DIR}/spec.html"
+RCOV_DOC = "#{DOC_DIR}/#{RCOV_DIR}"
 EXCLUDE_RCOV = "#{SPEC_DIR},#{GEM_DIR}"
 
 
@@ -46,3 +47,14 @@ RAKE::SpecTask.new do |t|
   t.rcov_opts = ['--exclude', EXCLUDE_RCOV]
   common_opts(t)
 end
+
+desc "Create all doc dirs if they don't exist already"
+task :dirs do
+  [[DOC_DIR, '.'], [SPEC_DIR, DOC_DIR], [RCOV_DIR, DOC_DIR]].each do |e|
+    Dir.mkdir(e.last + '/' + e.first) unless
+      Dir.entries(e.last).include?(e.first)
+  end
+end
+
+task :doc_spec => :dirs
+task :rcov_spec => :dirs
