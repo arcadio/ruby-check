@@ -22,20 +22,21 @@ class ProgressBar
     @progress += 1
   end
 
-  def to_s
+  def to_str
     pbar + ' ' + ratio
   end
 
   private
 
   def pbar
-    blen = ((progress / total.to_r) * length).floor
+    blen = ((progress / total.to_f) * length).floor
     head = blen < length ? HEAD : ''
     bar = BODY * blen + head
     ENCLOSINGS.first + bar + ' ' * (length - bar.length) + ENCLOSINGS.last
   end
 
   def ratio
-    "#{progress}/#{total}"
+    nc = total.to_s.length
+    sprintf("%#{nc}d/%d", progress, total)
   end
 end
