@@ -22,7 +22,7 @@ class ScrollPane
     @buffer[index] = line.strip
     if index >= @top and index < @top + @screen.maxy
       @screen.setpos(index, 0)
-      @screen.addstr(line)
+      @screen.addstr(line.strip)
       @screen.refresh
     end
   end
