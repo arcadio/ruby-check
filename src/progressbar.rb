@@ -1,19 +1,16 @@
+require 'initializer'
+
+
 class ProgressBar
   DEFAULT_LENGTH = 50
-
   ENCLOSINGS = ['[', ']']
-
   HEAD = '>'
-
   BODY = '='
-
   FILL = ' '
 
   attr_reader :total, :progress, :length
 
-  def initialize(total, length = DEFAULT_LENGTH)
-    @total = total
-    @length = length
+  initialize_with(:total, Default[:length, DEFAULT_LENGTH]) do
     @progress = 0
   end
 

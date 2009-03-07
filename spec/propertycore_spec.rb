@@ -1,5 +1,5 @@
-require 'property_language'
 require 'property_helpers'
+require 'property_language'
 
 
 module PropertySpec
