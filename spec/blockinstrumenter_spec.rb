@@ -1,15 +1,15 @@
-require 'property_analyzer'
+require 'blockinstrumenter'
 require 'property_helpers'
 
 
 module AnalyzerSpec
-  describe PropertyAnalyzer do
+  describe BlockInstrumenter do
     include PropertyHelpers
 
     it_should_behave_like 'Property'
 
     it 'should process correctly a simple property' do
-      PropertyAnalyzer.new(property :p => [Object, Object] do |a, b|
+      BlockInstrumenter.new(property :p => [Object, Object] do |a, b|
         a | b | c
       end)
     end

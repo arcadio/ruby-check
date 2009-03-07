@@ -4,7 +4,7 @@ require 'parse_tree'
 require 'sexp_processor'
 
 
-class PropertyAnalyzer < SexpProcessor
+class BlockInstrumenter < SexpProcessor
   def initialize(property)
     super()
     # self.strict = false

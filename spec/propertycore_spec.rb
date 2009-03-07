@@ -63,7 +63,8 @@ module PropertySpec
 
     it 'should reject properties with non-Symbol values as keys' do
       lambda { property(1) {} }.should raise_error(ArgumentError)
-      lambda { property(1 => String) {} }.should raise_error(ArgumentError)
+      lambda { property(1 => String) { |a| a.size == 0 } }.should
+      raise_error(ArgumentError)
     end
 
     it 'should reject properties without a defined predicate' do
