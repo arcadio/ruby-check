@@ -9,7 +9,7 @@ class PropertyAnalyzer < SexpProcessor
     super()
     # self.strict = false
     self.auto_shift_type = true
-    process(ParseTree.new.parse_tree_for_proc(property.pred))
+    process(ParseTree.new.parse_tree_for_proc(property.predicate))
   end
 
   def process_iter(exp)

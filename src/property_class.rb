@@ -15,7 +15,7 @@ class Property
       if narg != arity
         raise ArgumentError, "wrong number of arguments (#{narg} for #{arity})"
       end
-      pp[name].pred.call(*args)
+      pp[name].predicate.call(*args)
     else
       super
     end

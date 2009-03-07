@@ -15,7 +15,7 @@ module PropertySpec
       p.key.should == :p
       p.types.should == [String, String]
       args = ["a", "b"]
-      p.pred.call(*args).should be_true
+      p.predicate.call(*args).should be_true
     end
 
     it 'should accept a complex property with correct arity' do
@@ -25,7 +25,7 @@ module PropertySpec
       p.key.should == :p
       p.types.should == [String]
       args = 'aa'
-      p.pred.call(args).should be_true
+      p.predicate.call(args).should be_true
     end
 
     it 'should reject a simple property with incorrect arity' do
@@ -50,7 +50,7 @@ module PropertySpec
       end
       p.key.should == :p
       p.types.should == []
-      p.pred.call.should be_true
+      p.predicate.call.should be_true
     end
 
     it 'should reject a property with a long hash in its signature' do

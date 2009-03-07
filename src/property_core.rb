@@ -3,7 +3,7 @@ require 'property_cases'
 
 
 class Property
-  attr_reader :key, :types, :pred
+  attr_reader :key, :types
 
   def initialize(signature, &block)
     raise ArgumentError, 'a block must be provided' if block.nil?
@@ -12,24 +12,30 @@ class Property
       predicate(&block)
     else
       instance_eval(&block)
-      raise ArgumentError, 'property predicate should be defined' if pred.nil?
+      raise ArgumentError, 'property predicate should be defined' if predicate.nil?
     end
     self.class[key] = self
   end
 
-  def predicate(&expr); self.pred = expr end
-
   def arity; types.size end
+
+  def predicate(&expr)
+    if expr.nil?
+      @predicate
+    else
+      self.predicate = expr
+    end
+  end
 
   private
 
-  def pred=(expr)
+  def predicate=(expr)
     ts = types.size
     arity = expr.arity != -1 ? expr.arity : 0
     if ts != arity
       raise ArgumentError, "wrong number of types (#{ts} for #{arity})"
     end
-    @pred = expr
+    @predicate = expr
   end
 
   def dump_signature(signature)
