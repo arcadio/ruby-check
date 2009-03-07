@@ -15,7 +15,8 @@ module InitializerSpec
 
 
   class FogBugz < Bar
-    attr_reader *initsuper_with([:c, Default[:d, 80]], [Default[:a, 81], Default[:b, 82]])
+    attr_reader *initsuper_with([:c, Default[:d, 80]],
+                                [Default[:a, 81], Default[:b, 82]])
   end
 
 
@@ -38,13 +39,17 @@ module InitializerSpec
     def max; min end
 
     it 'should reject less than min arguments' do
-      lambda { @klass.new(*Array.new(min - 1 > 0 ? min - 1 : 0, 0)) }.should raise_error(ArgumentError)
-      lambda { @klass.new(*Array.new(min - 2 > 0 ? min - 2 : 0, 0)) }.should raise_error(ArgumentError)
+      lambda { @klass.new(*Array.new(min - 1 > 0 ? min - 1 : 0, 0)) }.should
+      raise_error(ArgumentError)
+      lambda { @klass.new(*Array.new(min - 2 > 0 ? min - 2 : 0, 0)) }.should
+      raise_error(ArgumentError)
     end
 
     it 'should reject more than max arguments' do
-      lambda { @klass.new(*Array.new(max + 1 > 0 ? min - 1 : 0, 0)) }.should raise_error(ArgumentError)
-      lambda { @klass.new(*Array.new(max + 2 > 0 ? min - 2 : 0, 0)) }.should raise_error(ArgumentError)
+      lambda { @klass.new(*Array.new(max + 1 > 0 ? min - 1 : 0, 0)) }.should
+      raise_error(ArgumentError)
+      lambda { @klass.new(*Array.new(max + 2 > 0 ? min - 2 : 0, 0)) }.should
+      raise_error(ArgumentError)
     end
   end
 

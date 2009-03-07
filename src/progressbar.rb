@@ -15,7 +15,7 @@ class ProgressBar
   end
 
   def step
-    raise 'Trying to step over the total' if progress == total
+    raise 'Trying to step over the total' if progress >= total
     @progress += 1
   end
 

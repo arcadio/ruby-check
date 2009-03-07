@@ -2,7 +2,7 @@ require 'curses'
 require 'progressbar'
 
 
-class ConsoleUI
+class CursesUI
   include Curses
 
   def initialize
@@ -75,7 +75,7 @@ class ConsoleUI
 end
 
 
-c = ConsoleUI.new
+c = CursesUI.new
 a = ['a', 'b', 'c' , 'd', 'e', 'f', 'g', 'h', 'i']
 a.size.times do
   c.step_property(a.shift)
