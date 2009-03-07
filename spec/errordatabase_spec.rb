@@ -1,4 +1,4 @@
-require 'error_database'
+require 'errordatabase'
 require 'fileutils'
 require 'property_helpers'
 
