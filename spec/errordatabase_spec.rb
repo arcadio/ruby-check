@@ -22,7 +22,7 @@ module ErrorDatabaseSpec
       db.driver.execute('SELECT * FROM error')
     end
 
-    it "shouldn't create the schema when it already exists" do
+    it 'should not create the schema when it already exists' do
       db = ErrorDatabase.new(DB_FILE)
       p = property :a => String do |a|
         a.size == a.length
@@ -33,7 +33,8 @@ module ErrorDatabaseSpec
       Marshal.load(r.first[1]).should == 'az_'
     end
 
-    it 'should create the schema when the database file but not the tables exist' do
+    it 'should create the schema when the database file but not the
+    tables exist' do
       db = ErrorDatabase.new(DB_FILE)
       db.driver.execute('DROP TABLE error')
       db2 = ErrorDatabase.new(DB_FILE)

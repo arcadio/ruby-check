@@ -34,7 +34,8 @@ class Property
   attr_reader :desc
 
   def desc=(doc)
-    raise ArgumentError, 'the description must be a String' unless doc.is_a?(String)
+    raise ArgumentError, 'the description must be a String' unless
+      doc.is_a?(String)
     raise 'Description already set' unless @desc.nil?
     @desc = doc
   end
