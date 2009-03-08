@@ -1,20 +1,13 @@
 require 'curses'
-require 'monitor'
 require 'progressbar'
 require 'scrollpane'
-require 'thread'
 
 
-class CursesUI
-  include Curses
-
-  attr_reader :scrollpane
-
+class TextUI
   def initialize
     np = 10
     @progressbar = ProgressBar.new(np)
     @scrollpane = ScrollPane.new
-    @scrollpane.extend MonitorMixin
     @failures = 0
     @slash = ' '
     @property = nil
@@ -48,24 +41,11 @@ class CursesUI
   private
 
   def update
-    Thread.exclusive do
-    i = 0
-    str.each_line do |l|
-      @scrollpane[i] = l
-      i += 1
-    end
-    end
+    @scrollpane.set_lines(0, str)
   end
 
-  def print_error(str)
-    Thread.exclusive do
-    e = @errorline
-    str.each_line do |l|
-      @scrollpane[e] = l
-      e += 1
-    end
-    @errorline = e
-    end
+  def print_error(s)
+    @errorline += @scrollpane.set_lines(@errorline, s)
   end
 
   def str
@@ -87,30 +67,26 @@ class CursesUI
   def loop
     term = false
     while !term do
-      c = getch
+      c = Curses.getch
       case c
-      when KEY_DOWN
-        Thread.exclusive do
+      when Curses::KEY_DOWN
         @scrollpane.scroll_down
-        end
-      when KEY_UP
-        Thread.exclusive do
+      when Curses::KEY_UP
         @scrollpane.scroll_up
-        end
       when ?q
         term = true
       end
     end
-    close_screen
+    Curses.close_screen
   end
 end
 
 
-c = CursesUI.new
+c = TextUI.new
 a = ['a', 'b', 'c' , 'd', 'e', 'f', 'g', 'h', 'i', 'f']
 a.size.times do
   c.step_property(a.shift)
-  2.times { c.step_case; sleep 2 }
+  20.times { c.step_case; sleep 0.2 }
   if rand > 0.5
     s = ""
     e = "a"
@@ -120,5 +96,21 @@ a.size.times do
     c.success
   end
 end
+sleep 100
 
+  # def update
+  #   i = 0
+  #   str.each_line do |l|
+  #     @scrollpane[i] = l
+  #     i += 1
+  #   end
+  # end
 
+  # def print_error(str)
+  #   e = @errorline
+  #   str.each_line do |l|
+  #     @scrollpane[e] = l
+  #     e += 1
+  #   end
+  #   @errorline = e
+  # end
