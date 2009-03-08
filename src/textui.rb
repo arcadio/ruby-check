@@ -4,6 +4,10 @@ require 'scrollpane'
 
 
 class TextUI
+  include Curses
+
+  attr_reader :scrollpane
+
   def initialize
     np = 10
     @progressbar = ProgressBar.new(np)
@@ -67,17 +71,17 @@ class TextUI
   def loop
     term = false
     while !term do
-      c = Curses.getch
+      c = getch
       case c
-      when Curses::KEY_DOWN
+      when KEY_DOWN
         @scrollpane.scroll_down
-      when Curses::KEY_UP
+      when KEY_UP
         @scrollpane.scroll_up
       when ?q
         term = true
       end
     end
-    Curses.close_screen
+    close_screen
   end
 end
 
@@ -86,7 +90,7 @@ c = TextUI.new
 a = ['a', 'b', 'c' , 'd', 'e', 'f', 'g', 'h', 'i', 'f']
 a.size.times do
   c.step_property(a.shift)
-  20.times { c.step_case; sleep 0.2 }
+  5.times { c.step_case; sleep 0.2 }
   if rand > 0.5
     s = ""
     e = "a"
@@ -97,6 +101,9 @@ a.size.times do
   end
 end
 sleep 100
+#include Curses
+#close_screen
+#p c.scrollpane.buffer
 
   # def update
   #   i = 0

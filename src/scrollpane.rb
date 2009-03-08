@@ -1,3 +1,5 @@
+require 'curses'
+require 'thread'
 
 
 class ScrollPane
@@ -7,67 +9,99 @@ class ScrollPane
     @buffer = []
     @top = 0
     init_screen
-    #nonl
-    #cbreak
+    cbreak
+    nonl
     noecho
     @screen = stdscr
     @screen.scrollok(true)
     @screen.keypad(true)
+    Thread.new { loop }
   end
 
-  def set_lines(index, str)
-    a, i = [], 0
-    str.each_line do |l|
-      a[i] = l.strip
-      i += 1
-    end
-    @buffer[index..index + i - 1] = a
-    r = (index..index + i - 1).select { |e| e >= @top and e < @top + @screen.maxy }
-    r.each do |e|
-      @screen.setpos(e, 0)
-      @screen.addstr(@buffer[e])
-    end
-    @screen.refresh if r.size > 0
-    i
-  end
-
-  def scroll_up
-      if @top > 0
-        @screen.scrl(-1)
-        @top -= 1
-        str = @buffer[@top]
-        if str
-          @screen.setpos(0, 0)
-          @screen.addstr(str)
-        end
-        true
-      else
-        false
+  def set_lines(index, lines)
+    Thread.exclusive do
+      i = 0
+      lines.each_line do |e|
+        self[index + i] = e
+        i += 1
       end
+      i
+    end
+  end
+
+  def []=(index, line)
+    Thread.exclusive do
+      @buffer[index] = l(line)
+      if index >= @top and index < @top + @screen.maxy
+        repaint
+      end
+    end
   end
 
   def scroll_down
-    if @top + @screen.maxy < @buffer.size
-      @screen.scrl(1)
-      @top += 1
-      str = @buffer[@top + @screen.maxy - 1]
-      if str
-        @screen.setpos(@screen.maxy - 1, 0)
-        @screen.addstr(str)
+    Thread.exclusive do
+      if @top + @screen.maxy < @buffer.size
+        @top += 1
+        repaint
       end
-      true
+    end
+  end
+
+  def scroll_up
+    Thread.exclusive do
+      if @top > 0
+        @top -= 1
+        repaint
+      end
+    end
+  end
+
+  private
+
+  def loop
+    while true do
+      c = getch
+      Thread.exclusive do
+        case c
+        when KEY_UP
+          scroll_up
+        when KEY_DOWN
+          scroll_down
+        end
+      end
+    end
+  end
+
+  def repaint
+    (0..@screen.maxy - 1).each do |e|
+      @screen.setpos(e, 0)
+      @screen.addstr(l(@buffer[@top + e]))
+    end
+    @screen.refresh
+  end
+
+  def l(line)
+    if line
+      l = line.strip
+      l + ' ' * (@screen.maxx - 1 - l.length)
     else
-      false
+      ' ' * (@screen.maxx - 1)
     end
   end
 end
 
-
-  # def []=(index, line)
-  #   @buffer[index] = line.strip
-  #   if index >= @top and index < @top + @screen.maxy
-  #     @screen.setpos(index, 0)
-  #     @screen.addstr(line.strip)
-  #     @screen.refresh
-  #   end
-  # end
+# s = ScrollPane.new
+# t = 0
+# i = 0
+# 100.times do
+#   #s.add_lines(i, "#{i}\n#{i+1}")
+#   s[i] = "#{i}"
+# #  sleep 0.1
+#   i += 1
+# end
+# #sleep 100
+# while true do
+#   s[0] = "#{rand}"
+#   s[1] = "#{rand}"
+#   sleep 1
+# end
