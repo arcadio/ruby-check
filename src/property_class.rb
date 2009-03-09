@@ -28,16 +28,14 @@ class Property
   @@next_desc = nil
 
   def self.next_desc=(doc)
-    @@next_desc = doc
+    @@next_desc = Property.check_desc(doc)
   end
 
   attr_reader :desc
 
   def desc=(doc)
-    raise ArgumentError, 'the description must be a String' unless
-      doc.is_a?(String)
     raise 'Description already set' unless @desc.nil?
-    @desc = doc
+    @desc = Property.check_desc(doc)
   end
 
   def self.[]=(key, property)
@@ -47,5 +45,13 @@ class Property
       @@next_desc = nil
     end
     property
+  end
+
+  private
+
+  def self.check_desc(doc)
+    raise ArgumentError, 'the description must be a String' unless
+      doc.is_a?(String)
+    doc
   end
 end

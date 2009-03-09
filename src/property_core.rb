@@ -12,7 +12,8 @@ class Property
       predicate(&block)
     else
       instance_eval(&block)
-      raise ArgumentError, 'property predicate should be defined' if predicate.nil?
+      raise ArgumentError, 'property predicate should be defined' if
+        predicate.nil?
     end
     self.class[key] = self
   end

@@ -50,5 +50,12 @@ module PropertyClassSpec
       Property[:q].desc.should == doc
       Property[:r].desc.should be_nil
     end
+
+    it 'should reject descriptions different than Strings' do
+      lambda do
+        desc 1
+        property :p do end
+      end.should raise_error(ArgumentError)
+    end
   end
 end
