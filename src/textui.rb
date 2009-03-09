@@ -6,8 +6,6 @@ require 'scrollpane'
 class TextUI
   include Curses
 
-  attr_reader :scrollpane
-
   def initialize
     np = 10
     @progressbar = ProgressBar.new(np)
