@@ -54,8 +54,10 @@ class ScrollPane
   end
 
   def close
-    @screen.close
-    close_screen
+    Thread.exclusive do
+      @screen.close
+      close_screen
+    end
   end
 
   private

@@ -75,6 +75,9 @@ class TextUI
           r = @scrollpane.scroll_up
         when KEY_DOWN, KEY_CTRL_N
           r = @scrollpane.scroll_down
+        when ?q
+          exit = true
+          @scrollpane.close
         end
         beep if !r
       end
@@ -83,18 +86,18 @@ class TextUI
 end
 
 
-c = TextUI.new
-a = ['a', 'b', 'c' , 'd', 'e', 'f', 'g', 'h', 'i', 'f']
-a.size.times do
-  c.step_property(a.shift)
-  5.times { c.step_case; sleep 0.2 }
-  if rand > 0.5
-    s = ""
-    e = "a"
-    40.times { s+= e + "\n"; e = e.next}
-    c.failure s
-  else
-    c.success
-  end
-end
-sleep 100
+# c = TextUI.new
+# a = ['a', 'b', 'c' , 'd', 'e', 'f', 'g', 'h', 'i', 'f']
+# a.size.times do
+#   c.step_property(a.shift)
+#   5.times { c.step_case; sleep 0.2 }
+#   if rand > 0.5
+#     s = ""
+#     e = "a"
+#     40.times { s+= e + "\n"; e = e.next}
+#     c.failure s
+#   else
+#     c.success
+#   end
+# end
+# sleep 100
