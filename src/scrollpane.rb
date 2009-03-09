@@ -15,25 +15,28 @@ class ScrollPane
     @screen = stdscr
     @screen.scrollok(true)
     @screen.keypad(true)
-    Thread.new { loop }
   end
 
   def set_lines(index, lines)
     Thread.exclusive do
       i = 0
-      lines.each_line do |e|
-        self[index + i] = e
+      lines.each_line do |line|
+        @buffer[index + i] = full_wide(line)
         i += 1
       end
+      repaint
       i
     end
   end
 
-  def []=(index, line)
+  def scroll_up
     Thread.exclusive do
-      @buffer[index] = l(line)
-      if index >= @top and index < @top + @screen.maxy
+      if @top > 0
+        @top -= 1
         repaint
+        true
+      else
+        false
       end
     end
   end
@@ -43,65 +46,33 @@ class ScrollPane
       if @top + @screen.maxy < @buffer.size
         @top += 1
         repaint
+        true
+      else
+        false
       end
     end
   end
 
-  def scroll_up
-    Thread.exclusive do
-      if @top > 0
-        @top -= 1
-        repaint
-      end
-    end
+  def close
+    @screen.close
+    close_screen
   end
 
   private
 
-  def loop
-    while true do
-      c = getch
-      Thread.exclusive do
-        case c
-        when KEY_UP
-          scroll_up
-        when KEY_DOWN
-          scroll_down
-        end
-      end
-    end
-  end
-
   def repaint
     (0..@screen.maxy - 1).each do |e|
       @screen.setpos(e, 0)
-      @screen.addstr(l(@buffer[@top + e]))
+      @screen.addstr(@buffer[@top + e] || blank)
     end
     @screen.refresh
   end
 
-  def l(line)
-    if line
-      l = line.strip
-      l + ' ' * (@screen.maxx - 1 - l.length)
-    else
-      ' ' * (@screen.maxx - 1)
-    end
+  def full_wide(line)
+    line.strip + ' ' * (@screen.maxx - 1 - line.length)
+  end
+
+  def blank
+    ' ' * (@screen.maxx - 1)
   end
 end
-
-# s = ScrollPane.new
-# t = 0
-# i = 0
-# 100.times do
-#   #s.add_lines(i, "#{i}\n#{i+1}")
-#   s[i] = "#{i}"
-# #  sleep 0.1
-#   i += 1
-# end
-# #sleep 100
-# while true do
-#   s[0] = "#{rand}"
-#   s[1] = "#{rand}"
-#   sleep 1
-# end

@@ -7,8 +7,7 @@ class TextUI
   include Curses
 
   def initialize
-    np = 10
-    @progressbar = ProgressBar.new(np)
+    @progressbar = ProgressBar.new(10)
     @scrollpane = ScrollPane.new
     @failures = 0
     @slash = ' '
@@ -43,14 +42,14 @@ class TextUI
   private
 
   def update
-    @scrollpane.set_lines(0, str)
+    @scrollpane.set_lines(0, status)
   end
 
-  def print_error(s)
-    @errorline += @scrollpane.set_lines(@errorline, s)
+  def print_error(error)
+    @errorline += @scrollpane.set_lines(@errorline, error)
   end
 
-  def str
+  def status
     @progressbar.to_str + "\n" + case_line + "\n" + fails_line
   end
 
@@ -67,19 +66,19 @@ class TextUI
   end
 
   def loop
-    term = false
-    while !term do
+    exit = false
+    while !exit do
       c = getch
-      case c
-      when KEY_DOWN
-        @scrollpane.scroll_down
-      when KEY_UP
-        @scrollpane.scroll_up
-      when ?q
-        term = true
+      Thread.exclusive do
+        case c
+        when KEY_UP, KEY_CTRL_P
+          r = @scrollpane.scroll_up
+        when KEY_DOWN, KEY_CTRL_N
+          r = @scrollpane.scroll_down
+        end
+        beep if !r
       end
     end
-    close_screen
   end
 end
 
@@ -99,23 +98,3 @@ a.size.times do
   end
 end
 sleep 100
-#include Curses
-#close_screen
-#p c.scrollpane.buffer
-
-  # def update
-  #   i = 0
-  #   str.each_line do |l|
-  #     @scrollpane[i] = l
-  #     i += 1
-  #   end
-  # end
-
-  # def print_error(str)
-  #   e = @errorline
-  #   str.each_line do |l|
-  #     @scrollpane[e] = l
-  #     e += 1
-  #   end
-  #   @errorline = e
-  # end
