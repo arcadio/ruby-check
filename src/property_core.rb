@@ -1,9 +1,14 @@
+require 'forwardable'
 require 'property_cases'
 require 'property_class'
 
 
 class Property
+  extend Forwardable
+
   attr_reader :key, :types
+
+  def_delegator :predicate, :call
 
   def initialize(signature, &block)
     raise ArgumentError, 'a block must be provided' if block.nil?
