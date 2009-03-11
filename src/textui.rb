@@ -6,13 +6,14 @@ require 'scrollpane'
 class TextUI
   include Curses
 
-  def initialize
-    @progressbar = ProgressBar.new(10)
+  def initialize(runner)
+    @runner = runner
+    @progressbar = ProgressBar.new(runner.properties.size)
     @scrollpane = ScrollPane.new
     @failures = 0
     @slash = ' '
     @property = nil
-    @errorline = 8
+    @errorline = 4
     update
     Thread.new { loop }
   end
@@ -22,27 +23,28 @@ class TextUI
     update
   end
 
-  def step_property(property = nil)
+  def next_property(property)
     @property = property
     update
   end
 
-  def success
-    @progressbar.step
-    update
-  end
+  def success; step end
 
-  def failure(cause)
-    print_error(cause)
+  def failure(cause = nil)
     @failures += 1
-    @progressbar.step
-    update
+    print_error("\n#{@failures}. #{@property.key} failed\n#{cause}")
+    step
   end
 
   private
 
   def update
     @scrollpane.set_lines(0, status)
+  end
+
+  def step
+    @progressbar.step
+    update
   end
 
   def print_error(error)
@@ -54,10 +56,12 @@ class TextUI
   end
 
   def case_line
-    if @property.nil?
+    if @progressbar.full
+      'Finished'
+    elsif @property.nil?
       ''
     else
-      @slash + ' checking ' + @property
+      @slash + ' checking ' + @property.key.to_s
     end
   end
 
@@ -84,20 +88,3 @@ class TextUI
     end
   end
 end
-
-
-# c = TextUI.new
-# a = ['a', 'b', 'c' , 'd', 'e', 'f', 'g', 'h', 'i', 'f']
-# a.size.times do
-#   c.step_property(a.shift)
-#   5.times { c.step_case; sleep 0.2 }
-#   if rand > 0.5
-#     s = ""
-#     e = "a"
-#     40.times { s+= e + "\n"; e = e.next}
-#     c.failure s
-#   else
-#     c.success
-#   end
-# end
-# sleep 100

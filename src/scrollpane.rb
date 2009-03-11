@@ -21,8 +21,12 @@ class ScrollPane
     Thread.exclusive do
       i = 0
       lines.each_line do |line|
-        @buffer[index + i] = full_wide(line)
-        i += 1
+        r = line
+        while r do
+          l, r = split(r)
+          @buffer[index + i] = full_wide(l)
+          i += 1
+        end
       end
       repaint
       i
@@ -70,8 +74,18 @@ class ScrollPane
     @screen.refresh
   end
 
+  def split(string)
+    x = @screen.maxx - 1
+    [string[0..x - 1], string[x..-1]]
+  end
+
   def full_wide(line)
-    line.strip + ' ' * (@screen.maxx - 1 - line.length)
+    x = @screen.maxx
+    if line.length <= x
+      line.strip + ' ' * (x - line.length)
+    else
+      line
+    end
   end
 
   def blank

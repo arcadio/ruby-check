@@ -19,6 +19,10 @@ class ProgressBar
     @progress += 1
   end
 
+  def full
+    progress == total
+  end
+
   def to_str
     pbar + ' ' + ratio
   end
