@@ -20,21 +20,25 @@ module ProgressBarSpec
 
     it 'should be empty initially' do
       @pb.to_str.should == '[>  ] 0/5'
+      @pb.full?.should be_false
     end
 
     it 'should progress adequately' do
       3.times { @pb.step }
       @pb.to_str.should == '[=> ] 3/5'
+      @pb.full?.should be_false
     end
 
     it 'should not be full until the total has been reached' do
       4.times { @pb.step }
       @pb.to_str.should == '[==>] 4/5'
+      @pb.full?.should be_false
     end
 
     it 'should be full when the total has been reached' do
       5.times { @pb.step }
       @pb.to_str.should == '[===] 5/5'
+      @pb.full?.should be_true
     end
 
     it 'should reject stepping over the total' do

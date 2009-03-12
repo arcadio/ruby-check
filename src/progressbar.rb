@@ -19,7 +19,7 @@ class ProgressBar
     @progress += 1
   end
 
-  def full
+  def full?
     progress == total
   end
 
