@@ -11,7 +11,7 @@ class TextUI
     @progressbar = ProgressBar.new(runner.properties.size)
     @scrollpane = ScrollPane.new
     @failures = 0
-    @slash = ''
+    @slash = ' '
     @property = nil
     @errorline = 4
     update
