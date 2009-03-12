@@ -11,15 +11,15 @@ class TextUI
     @progressbar = ProgressBar.new(runner.properties.size)
     @scrollpane = ScrollPane.new
     @failures = 0
-    @slash = ' '
+    @slash = ''
     @property = nil
-    @errorline = 4
+    @errorline = 3
     update
     Thread.new { loop }
   end
 
   def step_case
-    @slash = @slash == '/' ? '\\' : '/'
+    @slash = (@slash == '/' ? '\\' : '/')
     update
   end
 
@@ -45,9 +45,10 @@ class TextUI
   def step
     @progressbar.step
     update
+    @scrollpane.close if @progressbar.full?
   end
 
-  def print_error(error)
+  def print_error(error = nil)
     @errorline += @scrollpane.set_lines(@errorline, error)
   end
 
@@ -56,7 +57,7 @@ class TextUI
   end
 
   def case_line
-    if @progressbar.full
+    if @progressbar.full?
       'Finished'
     elsif @property.nil?
       ''
@@ -66,12 +67,11 @@ class TextUI
   end
 
   def fails_line
-    "#{@failures} failure(s)"
+    "#{@failures} failure(s)\n"
   end
 
   def loop
-    exit = false
-    while !exit do
+    while true do
       c = getch
       Thread.exclusive do
         case c
@@ -79,9 +79,6 @@ class TextUI
           r = @scrollpane.scroll_up
         when KEY_DOWN, KEY_CTRL_N
           r = @scrollpane.scroll_down
-        when ?q
-          exit = true
-          @scrollpane.close
         end
         beep if !r
       end

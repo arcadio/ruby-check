@@ -1,9 +1,10 @@
 require 'curses'
+require 'lineutils'
 require 'thread'
 
 
 class ScrollPane
-  include Curses
+  include Curses, LineUtils
 
   def initialize
     @buffer = []
@@ -22,9 +23,9 @@ class ScrollPane
       i = 0
       lines.each_line do |line|
         r = line
-        while r do
-          l, r = split(r)
-          @buffer[index + i] = full_wide(l)
+        while !r.empty? do
+          l, r = divide(r, @screen.maxx - 1)
+          @buffer[index + i] = full_wide(l, @screen.maxx - 1)
           i += 1
         end
       end
@@ -61,6 +62,7 @@ class ScrollPane
     Thread.exclusive do
       @screen.close
       close_screen
+      puts @buffer
     end
   end
 
@@ -72,20 +74,6 @@ class ScrollPane
       @screen.addstr(@buffer[@top + e] || blank)
     end
     @screen.refresh
-  end
-
-  def split(string)
-    x = @screen.maxx - 1
-    [string[0..x - 1], string[x..-1]]
-  end
-
-  def full_wide(line)
-    x = @screen.maxx
-    if line.length <= x
-      line.strip + ' ' * (x - line.length)
-    else
-      line
-    end
   end
 
   def blank
