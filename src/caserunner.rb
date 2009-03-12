@@ -1,7 +1,7 @@
 require 'initializer'
 
 
-class SimpleRunner
+class CaseRunner
   attr_reader :properties
 
   def initialize(ui, *properties)
