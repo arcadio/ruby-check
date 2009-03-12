@@ -21,11 +21,12 @@ class ScrollPane
   def set_lines(index, lines)
     Thread.exclusive do
       i = 0
+      mlen = @screen.maxx - 1
       lines.each_line do |line|
         r = line
         while !r.empty? do
-          l, r = divide(r, @screen.maxx - 1)
-          @buffer[index + i] = full_wide(l, @screen.maxx - 1)
+          l, r = divide(r, mlen)
+          @buffer[index + i] = full_wide(l, mlen)
           i += 1
         end
       end
@@ -62,7 +63,7 @@ class ScrollPane
     Thread.exclusive do
       @screen.close
       close_screen
-      puts @buffer
+      @buffer.each { |e| puts e || ' ' }
     end
   end
 
@@ -71,12 +72,12 @@ class ScrollPane
   def repaint
     (0..@screen.maxy - 1).each do |e|
       @screen.setpos(e, 0)
-      @screen.addstr(@buffer[@top + e] || blank)
+      @screen.addstr(@buffer[@top + e] || blank_line)
     end
     @screen.refresh
   end
 
-  def blank
+  def blank_line
     ' ' * (@screen.maxx - 1)
   end
 end

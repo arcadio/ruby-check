@@ -13,7 +13,7 @@ class TextUI
     @failures = 0
     @slash = ''
     @property = nil
-    @errorline = 3
+    @errorline = 4
     update
     Thread.new { loop }
   end
