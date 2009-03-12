@@ -43,6 +43,7 @@ class TextUI
   end
 
   def step
+    @slash = ' '
     @progressbar.step
     update
     @scrollpane.close if @progressbar.full?

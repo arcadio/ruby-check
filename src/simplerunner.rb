@@ -29,7 +29,7 @@ class SimpleRunner
             @ui.step_case
             sleep 2
             unless p.call(*cases[i])
-              @ui.failure
+              @ui.failure("Input #{cases[i].inspect}")
               failed = true
             end
             i += 1
