@@ -18,7 +18,6 @@ class CaseRunner
 
   def check
     properties.each do |p|
-      sleep 2
       @ui.next_property(p)
       unless p.arity == 0
         cases = p.cases
@@ -27,7 +26,6 @@ class CaseRunner
           failed = false
           while i < cases.size and !failed do
             @ui.step_case
-            sleep 2
             unless p.call(*cases[i])
               @ui.failure("Input #{cases[i].inspect}")
               failed = true

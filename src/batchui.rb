@@ -1,5 +1,13 @@
+require 'forwardable'
+
+
 class BatchUI
-  def initialize(runner)
+  extend Forwardable
+
+  def_delegators :@output, :print, :puts
+
+  def initialize(runner, output = STDOUT)
+    @output = output
   end
 
   def step_case
