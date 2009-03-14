@@ -35,31 +35,3 @@ class BlockInstrumenter < SexpProcessor
     s(:call, target, method, args)
   end
 end
-
-  # def initialize(property)
-  #   super()
-  #   # self.strict = false
-  #   self.auto_shift_type = true
-  #   @tree = ParseTree.new.parse_tree_for_proc(property)
-  #   p @tree
-  #   @output = process(@tree)
-  # end
-
-  # def process_iter(exp)
-  #   call = exp.shift
-  #   asgn = exp.shift
-  #   body = process(exp.shift)
-  #   s(:iter, call, asgn, body)
-  # end
-
-  # def process_call(exp)
-  #   lvalue = process(exp.shift)
-  #   method = exp.shift
-  #   rvalue = exp.shift
-  #   rvalue = process(rvalue) if rvalue
-  #   unless rvalue
-  #     s(:call, lvalue, method)
-  #   else
-  #     s(:call, lvalue, method, rvalue) # problema con numeros y arrays
-  #   end
-  # end
