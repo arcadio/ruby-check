@@ -2,16 +2,17 @@ require 'blockinstrumenter'
 require 'property_helpers'
 
 
-module AnalyzerSpec
+module BlockInstrumenterSpec
   describe BlockInstrumenter do
     include PropertyHelpers
 
     it_should_behave_like 'Property'
 
     it 'should process correctly a simple property' do
-      BlockInstrumenter.new(property :p => [Object, Object] do |a, b|
-        a | b | c
-      end)
+      BlockInstrumenter.new(p = property(:p => [Object, Object]) { |a, b| a | b })
+      p.covertable.covered?.should be_false
+      p.call(true, true)
+      p.covertable.covered?.should be_true
     end
   end
 end

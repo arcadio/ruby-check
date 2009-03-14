@@ -1,6 +1,7 @@
 require 'forwardable'
 require 'property_cases'
 require 'property_class'
+require 'property_cover'
 
 
 class Property
