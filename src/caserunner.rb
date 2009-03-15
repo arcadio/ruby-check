@@ -4,13 +4,13 @@ require 'initializer'
 class CaseRunner
   attr_reader :properties
 
-  def initialize(ui, *properties)
-    unless properties.size == 0
-      @properties = properties
-    else
+  def initialize(properties, ui, *params)
+    if properties.nil? or properties.size == 0
       @properties = Property.properties.values
+    else
+      @properties = properties.map { |p| p.is_a?(Symbol) ? Property[p] : p }
     end
-    @ui = ui.new(self)
+    @ui = ui.new(self, *params)
     check
   end
 

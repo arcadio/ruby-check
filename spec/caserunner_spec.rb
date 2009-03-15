@@ -22,22 +22,28 @@ module CaseRunnerSpec
     end
 
     before(:each) do
-      $stdout = StringIO.new
-      @d = define_prop
+      @prop_d = define_prop
     end
 
     after(:each) do
       Property.clear
-      @d = nil
-      $stdout = STDOUT
+      @prop_d = nil
     end
 
     it 'should run correctly one property' do
-      CaseRunner.new(BatchUI, @d)
+      CaseRunner.new([@prop_d], BatchUI, StringIO.new)
     end
 
     it 'should run correctly without specifying properties' do
-      CaseRunner.new(BatchUI)
+      CaseRunner.new([], BatchUI, StringIO.new)
+    end
+
+    it 'should run correctly specifying nil properties and a generic UI' do
+      CaseRunner.new(nil, UI, StringIO.new)
+    end
+
+    it 'should run correctly specifying properties with symbols and a generic UI' do
+      CaseRunner.new([@prop_d, :a, :b], UI, StringIO.new)
     end
   end
 end
