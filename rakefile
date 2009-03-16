@@ -13,7 +13,10 @@ SRC_DIR = 'src'
 SPEC = FileList["#{SPEC_DIR}/*.rb"]
 SPEC_DOC = "#{DOC_DIR}/#{SPEC_DIR}/spec.html"
 RCOV_DOC = "#{DOC_DIR}/#{RCOV_DIR}"
-EXCLUDE_RCOV = "#{SPEC_DIR},#{GEM_DIR}"
+EXCLUDE_SRC = ['textui', 'ui', 'scrollpane'].map do |f|
+  "#{SRC_DIR}/#{f}.rb,"
+end.inject(&:+)[0..-2]
+EXCLUDE_RCOV = "#{SPEC_DIR},#{GEM_DIR},#{EXCLUDE_SRC}"
 
 
 def common_opts(t)
