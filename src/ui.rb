@@ -3,11 +3,11 @@ require 'textui'
 
 
 class UI
-  def self.new(runner, output = nil)
-    if Object.const_defined? :IRB or output
-      BatchUI.new(runner, output)
+  def self.new(output = nil)
+    if Object.const_defined?(:IRB) or output
+      BatchUI.new(output)
     else
-      TextUI.new(runner)
+      TextUI.new
     end
   end
 end

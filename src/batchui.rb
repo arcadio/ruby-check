@@ -6,16 +6,27 @@ class BatchUI
 
   def_delegators :@output, :print, :puts
 
-  def initialize(runner, output = $stdout)
+  def initialize(output = $stdout)
     @output = output
   end
 
-  def step_case
-    print '.'
+  def update(key, value = nil)
+    params = value ? [value] : []
+    self.send(key, *params)
   end
 
-  def next_property(property)
+  private
+
+  def properties(n)
+    puts "Checking #{n} properties"
+  end
+
+  def next(property)
     puts property.key.to_s
+  end
+
+  def step
+    print '.'
   end
 
   def success
