@@ -38,6 +38,8 @@ class Property
     @desc = Property.check_desc(doc)
   end
 
+  private
+
   def self.[]=(key, property)
     properties[key] = property
     if @@next_desc
@@ -46,8 +48,6 @@ class Property
     end
     property
   end
-
-  private
 
   def self.check_desc(doc)
     raise ArgumentError, 'the description must be a String' unless
