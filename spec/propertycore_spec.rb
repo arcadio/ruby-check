@@ -56,6 +56,12 @@ module PropertySpec
       raise_error(ArgumentError)
     end
 
+    it 'should reject a property without a type list' do
+      lambda { Property.new(:a, String) { |e| } }.should
+      raise_error(ArgumentError)
+      lambda { Property.new(:b, nil) { |e| } }.should raise_error(ArgumentError)
+    end
+
     it 'should reject properties without a defined predicate' do
       lambda { property(:p => String) {} }.should raise_error(ArgumentError)
     end
