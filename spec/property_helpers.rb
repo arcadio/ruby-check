@@ -1,4 +1,4 @@
-require 'property_class'
+require 'property'
 
 
 module PropertyHelpers

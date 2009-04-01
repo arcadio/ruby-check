@@ -1,5 +1,6 @@
 require 'covertable'
 require 'forwardable'
+require 'property'
 
 
 class Property

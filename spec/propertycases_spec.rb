@@ -1,5 +1,4 @@
 require 'property_helpers'
-require 'property_language'
 
 
 module PropertyCasesSpec

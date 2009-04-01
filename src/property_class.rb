@@ -1,4 +1,5 @@
 require 'forwardable'
+require 'property'
 
 
 class Property

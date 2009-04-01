@@ -1,7 +1,5 @@
 require 'forwardable'
-require 'property_cases'
-require 'property_class'
-require 'property_cover'
+require 'property'
 
 
 class Property
@@ -9,11 +7,16 @@ class Property
 
   attr_reader :key, :types
 
+  def_delegator :types, :size, :arity
+
   def_delegator :predicate, :call
 
-  def initialize(signature, &block)
+  def initialize(key, types, &block)
+    raise ArgumentError, 'wrong key' unless key.is_a?(Symbol)
+    raise ArgumentError, 'wrong type list' unless types.is_a?(Array)
     raise ArgumentError, 'a block must be provided' if block.nil?
-    @key, @types = dump_signature(signature)
+    @key = key
+    @types = types
     if block.arity > 0 or types.size == 0
       predicate(&block)
     else
@@ -23,8 +26,6 @@ class Property
     end
     self.class[key] = self
   end
-
-  def arity; types.size end
 
   def predicate(&expr)
     if expr.nil?
@@ -43,24 +44,5 @@ class Property
       raise ArgumentError, "wrong number of types (#{ts} for #{arity})"
     end
     @predicate = expr
-  end
-
-  def dump_signature(signature)
-    if signature.is_a?(Hash)
-      dump_hash(signature)
-    elsif signature.is_a?(Symbol)
-      [signature, []]
-    else
-      raise ArgumentError, 'incorrect property signature'
-    end
-  end
-
-  def dump_hash(hash)
-    if hash.size != 1 or !hash.keys.first.is_a?(Symbol)
-      raise ArgumentError, 'incorrect property signature'
-    end
-    ary = hash.to_a
-    types = ary.first.last
-    [ary.first.first, types.is_a?(Array) ? types : [types]]
   end
 end

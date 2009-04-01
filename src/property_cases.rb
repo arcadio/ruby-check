@@ -1,4 +1,4 @@
-require 'property_core'
+require 'property'
 
 
 class Property
