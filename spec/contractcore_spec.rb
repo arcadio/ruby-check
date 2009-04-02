@@ -10,6 +10,7 @@ module ContractSpec
 
     class Foo
       def bar(baz); end
+      def foobar; end
     end
 
     METHOD = Foo.instance_method(:bar)
@@ -37,6 +38,14 @@ module ContractSpec
       c.method.should == METHOD
       c.precondition.should == precondition
       c.postcondition.should == postcondition
+    end
+
+    it 'should build a complex contract of a method of arity 0' do
+      method = Foo.instance_method(:foobar)
+      c = Contract.new(method, []) do
+        requires { }
+        ensures { |r| r == nil }
+      end
     end
 
     it 'should reject a contract with mismatching type length' do
