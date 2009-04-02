@@ -1,7 +1,5 @@
 require 'blockinstrumenter'
-require 'property_cover'
 require 'property_helpers'
-# fix require
 
 
 module BlockInstrumenterSpec

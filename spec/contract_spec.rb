@@ -8,22 +8,77 @@ module ContractSpec
 
     it_should_behave_like 'Property'
 
+    class Foo
+      def bar(baz); end
+    end
+
+    METHOD = Foo.instance_method(:bar)
+
     it 'should build a simple contract' do
       precondition = lambda { |n| n >= 0 }
       postcondition = lambda { |n,r| (r ** 2 - n).abs < 1e-5 }
-      method = Math.method(:sqrt)
-      c = Contract.new(method, [Float], precondition, postcondition)
-      c.method.should == method
+      c = Contract.new(METHOD, [Float], precondition, postcondition)
+      c.key.should == :'ContractSpec::Foo.bar'
+      c.types.should == [Float]
+      c.method.should == METHOD
       c.precondition.should == precondition
       c.postcondition.should == postcondition
     end
 
-    it 'should reject a contract with mismatching types' do
+    it 'should build a complex contract' do
       precondition = lambda { |n| n >= 0 }
       postcondition = lambda { |n,r| (r ** 2 - n).abs < 1e-5 }
-      method = Math.method(:sqrt)
+      c = Contract.new(METHOD, [Float]) do
+        requires(&precondition)
+        ensures(&postcondition)
+      end
+      c.key.should == :'ContractSpec::Foo.bar'
+      c.types.should == [Float]
+      c.method.should == METHOD
+      c.precondition.should == precondition
+      c.postcondition.should == postcondition
+    end
+
+    it 'should reject a contract with mismatching type length' do
+      precondition = lambda { |n| n >= 0 }
+      postcondition = lambda { |n,r| (r ** 2 - n).abs < 1e-5 }
       lambda do
-        Contract.new(method, [], precondition, postcondition)
+        Contract.new(METHOD, [], precondition, postcondition)
+      end.should raise_error(ArgumentError)
+    end
+
+    it 'should reject a precondition with mismatching arity' do
+      precondition = lambda { |n,r| }
+      postcondition = lambda { |n,r| (r ** 2 - n).abs < 1e-5 }
+      lambda do
+        Contract.new(METHOD, [Float], precondition, postcondition)
+      end.should raise_error(ArgumentError)
+    end
+
+    it 'should reject a postcondition with mismatching arity' do
+      precondition = lambda { |n,r| n >= 0 }
+      postcondition = lambda { |n,r,s| }
+      lambda do
+        Contract.new(METHOD, [Float]) do
+          requires(&precondition)
+          ensures(&postcondition)
+        end
+      end.should raise_error(ArgumentError)
+    end
+
+    it 'should reject a contract without precondition' do
+      postcondition = lambda { |n,r| (r ** 2 - n).abs < 1e-5 }
+      lambda do
+        Contract.new(METHOD, [Float]) do
+          ensures(&postcondition)
+        end
+      end.should raise_error(Exception)
+    end
+
+    it 'should reject a contract without postcondition' do
+      precondition = lambda { |n,r| n >= 0 }
+      lambda do
+        Contract.new(METHOD, [], precondition)
       end.should raise_error(ArgumentError)
     end
   end
