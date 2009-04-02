@@ -1,4 +1,4 @@
-require 'property_core'
+require 'property'
 require 'rubygems'
 require 'sqlite3'
 
