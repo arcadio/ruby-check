@@ -52,13 +52,13 @@ module PropertySpec
 
     it 'should reject properties with non-Symbol values as keys' do
       lambda { Property.new(1, []) { } }.should raise_error(ArgumentError)
-      lambda { Property.new(1, String) { |a| a.size == 0 } }.should
-      raise_error(ArgumentError)
+      lambda do
+        Property.new(1, String) { |a| a.size == 0 }
+      end.should raise_error(ArgumentError)
     end
 
     it 'should reject a property without a type list' do
-      lambda { Property.new(:a, String) { |e| } }.should
-      raise_error(ArgumentError)
+      lambda { Property.new(:a, String) { |e| } }.should raise_error(ArgumentError)
       lambda { Property.new(:b, nil) { |e| } }.should raise_error(ArgumentError)
     end
 
