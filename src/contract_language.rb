@@ -1,5 +1,4 @@
 require 'contract'
-require 'signature'
 
 
 class Class
