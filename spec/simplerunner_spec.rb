@@ -1,12 +1,10 @@
 require 'batchui'
-require 'runner'
-require 'property'
+require 'simplerunner'
 require 'property_helpers'
-require 'contract'
 
 
 module SimpleRunnerSpec
-  describe Runner do
+  describe SimpleRunner do
     include PropertyHelpers
 
     it_should_behave_like 'Property'
@@ -29,11 +27,23 @@ module SimpleRunnerSpec
       [Property[:a], Property[:b], Property[:c], Property[:d]]
     end
 
-    it 'should run all properties ' do
-      r = Runner.new
+    it 'should run all properties with cases correctly' do
+      r = SimpleRunner.new
       s = StringIO.new
       r.add_observer(UI.new(s))
-      (PSet[*define_prop] | r).output
+      (PList[*define_prop] | r).output
+      s.string.should ==
+        "Checking 4 properties\n" +
+        "a\n" +
+        "Success\n" +
+        "b\n" +
+        "Failure\n" +
+        "c\n" +
+        "..Failure\n" +
+        "Input [\"abc\", \"cde\"]\n" +
+        "d\n" +
+        "Failure\n" +
+        "No test cases provided\n"
     end
   end
 end
