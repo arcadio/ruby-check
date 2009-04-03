@@ -39,3 +39,41 @@ class Runner
     notify_observers(:failure, cause)
   end
 end
+
+
+class SequentialRunner < Runner
+
+  private
+
+  def check(properties)
+    properties.each do |p|
+      notify_next(p)
+      unless p.arity == 0
+        check_property(p)
+      else
+        notify_success if eval_property(p, [])
+      end
+    end
+  end
+
+  def eval_property(p, args)
+    begin
+      r = p.call(*args)
+      failure(args) if !r
+      r
+    rescue Exception => e
+      failure(args, e)
+      false
+    end
+  end
+
+  def failure(args, exception = nil)
+    message = ''
+    message += "Input #{args.inspect}" if !args.empty?
+    if exception
+      message += "\n" if !message.empty?
+      message += "Unhandled #{exception}"
+    end
+    notify_failure(message.empty? ? nil : message)
+  end
+end

@@ -24,7 +24,16 @@ module SimpleRunnerSpec
         predicate { |x, y| x != y }
       end
 
-      [Property[:a], Property[:b], Property[:c], Property[:d]]
+      property(:e) { raise nil }
+
+      property :f => String do
+        predicate { |s| s.length >= 0 }
+
+        always_check '', nil, 'a'
+      end
+
+      [Property[:a], Property[:b], Property[:c], Property[:d], Property[:e],
+      Property[:f]]
     end
 
     it 'should run all properties with cases correctly' do
@@ -33,7 +42,7 @@ module SimpleRunnerSpec
       r.add_observer(UI.new(s))
       (PList[*define_prop] | r).output
       s.string.should ==
-        "Checking 4 properties\n" +
+        "Checking 6 properties\n" +
         "a\n" +
         "Success\n" +
         "b\n" +
@@ -43,7 +52,14 @@ module SimpleRunnerSpec
         "Input [\"abc\", \"cde\"]\n" +
         "d\n" +
         "Failure\n" +
-        "No test cases provided\n"
+        "No test cases provided\n" +
+        "e\n" +
+        "Failure\n" +
+        "Unhandled exception object expected\n" +
+        "f\n" +
+        "..Failure\n" +
+        "Input [nil]\n" +
+        "Unhandled undefined method `length' for nil:NilClass\n"
     end
   end
 end
