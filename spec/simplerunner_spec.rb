@@ -32,8 +32,14 @@ module SimpleRunnerSpec
         always_check '', nil, 'a'
       end
 
+      property :g => [String, String] do
+        predicate { |s,t| s.length == t.length }
+
+        always_check ['', ''], ['a', 'a'], ['ab', 'ab']
+      end
+
       [Property[:a], Property[:b], Property[:c], Property[:d], Property[:e],
-      Property[:f]]
+       Property[:f], Property[:g]]
     end
 
     it 'should run all properties with cases correctly' do
@@ -42,7 +48,7 @@ module SimpleRunnerSpec
       r.add_observer(UI.new(s))
       (PList[*define_prop] | r).output
       s.string.should ==
-        "Checking 6 properties\n" +
+        "Checking 7 properties\n" +
         "a\n" +
         "Success\n" +
         "b\n" +
@@ -59,7 +65,9 @@ module SimpleRunnerSpec
         "f\n" +
         "..Failure\n" +
         "Input [nil]\n" +
-        "Unhandled undefined method `length' for nil:NilClass\n"
+        "Unhandled undefined method `length' for nil:NilClass\n" +
+        "g\n" +
+        "...Success\n"
     end
   end
 end

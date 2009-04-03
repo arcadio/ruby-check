@@ -1,19 +1,22 @@
+require 'cases'
 require 'runner'
 
 
 class SimpleRunner < SequentialRunner
 
+  def initialize
+    @cases = Cases.new
+  end
+
   private
 
   def check_property(p)
-    cases = p.cases
-    if cases
-      i = 0
+    @cases.set_property(p)
+    unless @cases.exhausted?
       failed = false
-      while i < cases.size and !failed do
+      while !@cases.exhausted? and !failed
         notify_step
-        failed = !eval_property(p, cases[i])
-        i += 1
+        failed = !eval_property(p, @cases.generate)
       end
       notify_success unless failed
     else
