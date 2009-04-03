@@ -9,8 +9,9 @@ class Cases < Strategy
   end
 
   def gen
-    @property.cases[i]
+    c = @property.cases[@i]
     @i += 1
+    c
   end
 
   def exh

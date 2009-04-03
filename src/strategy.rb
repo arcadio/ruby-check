@@ -9,10 +9,10 @@ class Strategy
   end
 
   def generate
-    @property and !exhausted ? gen : error
+    (@property and !exhausted?) ? gen : error
   end
 
-  def exhausted
+  def exhausted?
     @property ? exh : error
   end
 
