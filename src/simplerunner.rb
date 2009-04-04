@@ -20,7 +20,7 @@ class SimpleRunner < SequentialRunner
       end
       notify_success unless failed
     else
-      notify_failure('No test cases provided')
+      notify_failure('No test cases could be generated')
     end
   end
 end
