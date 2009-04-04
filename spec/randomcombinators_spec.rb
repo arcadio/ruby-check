@@ -36,7 +36,9 @@ module RandomSpec
       set = Set[]
       1000.times { set << gen.arbitrary }
       r = (1..20).to_a
-      set.all? { |e| r.include?(e) or e.is_a?(String) or e == [] }.should be_true
+      set.all? do |e|
+        r.include?(e) or e.is_a?(String) or e == []
+      end.should be_true
     end
   end
 end

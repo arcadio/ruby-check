@@ -14,6 +14,7 @@ class Action
     end
   end
 
+
   class SAction
     extend Forwardable
     include PipelineElement
@@ -22,6 +23,7 @@ class Action
 
     def_delegator :@block, :call, :output
   end
+
 
   class IAction
     include Filter

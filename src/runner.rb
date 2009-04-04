@@ -42,7 +42,6 @@ end
 
 
 class SequentialRunner < Runner
-
   private
 
   def check(properties)

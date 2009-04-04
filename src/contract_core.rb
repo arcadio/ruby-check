@@ -2,7 +2,6 @@ require 'contract'
 
 
 class Contract < Property
-
   attr_reader :method, :precondition, :postcondition
 
   def initialize(method, types, precondition = nil, postcondition = nil, &block)

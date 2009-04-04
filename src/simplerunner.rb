@@ -3,7 +3,6 @@ require 'runner'
 
 
 class SimpleRunner < SequentialRunner
-
   def initialize
     @cases = Cases.new
   end

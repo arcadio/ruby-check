@@ -11,6 +11,7 @@ module ContractLanguageSpec
       def foobar; end
     end
 
+
     it 'should build a contract with => notation' do
       class Foo
         contract :bar => [Float] do
@@ -33,7 +34,6 @@ module ContractLanguageSpec
       c.types.should == []
     end
 
-    # without array
     it 'should build a contract with => notation and without Array' do
       class Foo
         contract :bar => Float do

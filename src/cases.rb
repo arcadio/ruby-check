@@ -1,3 +1,4 @@
+require 'property'
 require 'strategy'
 
 

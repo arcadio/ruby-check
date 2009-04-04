@@ -58,7 +58,9 @@ module PropertySpec
     end
 
     it 'should reject a property without a type list' do
-      lambda { Property.new(:a, String) { |e| } }.should raise_error(ArgumentError)
+      lambda do
+        Property.new(:a, String) { |e| }
+      end.should raise_error(ArgumentError)
       lambda { Property.new(:b, nil) { |e| } }.should raise_error(ArgumentError)
     end
 

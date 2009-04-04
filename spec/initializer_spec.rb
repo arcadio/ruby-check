@@ -54,7 +54,7 @@ module InitializerSpec
   end
 
 
-  describe Bar, ' initialize_with(:a, :b)' do
+  describe Bar, 'initialize_with(:a, :b)' do
     it_should_behave_like 'initialization'
 
     def klass; Bar end
@@ -69,7 +69,7 @@ module InitializerSpec
   end
 
 
-  describe FooBar, ' < Foo initsuper_with([:c, :d], [:a, :b])' do
+  describe FooBar, '< Foo initsuper_with([:c, :d], [:a, :b])' do
     it_should_behave_like 'initialization'
 
     def klass; FooBar end
