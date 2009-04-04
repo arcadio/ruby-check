@@ -4,20 +4,20 @@ require 'strategy_helpers'
 
 
 module CasesSpec
-  describe Cases do
-    def strategy; Cases end
+  describe CasesStrategy do
+    def strategy; CasesStrategy end
 
-    describe Cases, 'when just built' do
+    describe CasesStrategy, 'when just built' do
       include StrategyHelpers
 
       it_should_behave_like 'NewStrategy'
     end
 
 
-    describe Cases do
+    describe CasesStrategy do
       it_should_behave_like 'Strategy'
 
-      describe Cases, 'with a property that does not have any' do
+      describe CasesStrategy, 'with a property that does not have any' do
         def define_prop
           property :p => [String] do |e|
             e.length > 1
@@ -28,7 +28,7 @@ module CasesSpec
       end
 
 
-      describe Cases, 'with a property that has one case' do
+      describe CasesStrategy, 'with a property that has one case' do
         def define_prop
           property :p => String do
             predicate { |s| s.length >= 0 }
@@ -48,7 +48,7 @@ module CasesSpec
       end
 
 
-      describe Cases, 'with a property that has many cases' do
+      describe CasesStrategy, 'with a property that has many cases' do
         def define_prop
           property :q => [String, String] do
             predicate { |s, t| s == t }

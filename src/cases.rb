@@ -2,7 +2,7 @@ require 'property'
 require 'strategy'
 
 
-class Cases < Strategy
+class CasesStrategy < Strategy
   private
 
   def gen

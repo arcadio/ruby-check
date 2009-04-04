@@ -4,7 +4,7 @@ require 'runner'
 
 class SimpleRunner < SequentialRunner
   def initialize
-    @cases = Cases.new
+    @cases = CasesStrategy.new
   end
 
   private

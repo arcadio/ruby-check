@@ -10,7 +10,7 @@ module ComplexRunnerSpec
     it_should_behave_like 'Runner'
 
     def runner
-      ComplexRunner.new(Cases.new)
+      ComplexRunner.new(CasesStrategy.new)
     end
   end
 end

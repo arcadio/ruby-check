@@ -7,3 +7,7 @@ require 'complexrunner'
 require 'cases'
 require 'random'
 require 'ui'
+
+
+include Action
+include Random

@@ -3,6 +3,8 @@ require 'action'
 
 module ActionSpec
   describe Action do
+    include Action
+
     it 'should work correctly for initial actions' do
       a = [1, 2, 3]
       do! { a }.output.should == a
