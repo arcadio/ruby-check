@@ -5,19 +5,26 @@ class Strategy
 
   def set_property(property)
     @property = property
+    @count = 0
     set(property)
   end
 
   def generate
-    (@property and !exhausted?) ? gen : error
+    if @property and !exhausted?
+      g = gen
+      @count += 1
+      g
+    else
+      error
+    end
   end
 
   def exhausted?
-    @property ? exh : error
+    @property ? (!can or exh) : error
   end
 
   def progress
-    @property ? pro : error
+    @property ? (can ? pro : 0) : error
   end
 
   private
@@ -25,4 +32,6 @@ class Strategy
   def error
     raise 'Wrong state'
   end
+
+  def set(property); end
 end

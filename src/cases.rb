@@ -4,21 +4,19 @@ require 'strategy'
 class Cases < Strategy
   private
 
-  def set(property)
-    @i = 0
+  def gen
+    @property.cases[@count]
   end
 
-  def gen
-    c = @property.cases[@i]
-    @i += 1
-    c
+  def can
+    !@property.cases.nil?
   end
 
   def exh
-    @property.cases.nil? or @property.cases.size == @i
+    @property.cases.size == @count
   end
 
   def pro
-    @property.cases ? @i.to_f / @property.cases.size : 0
+    @count.to_f / @property.cases.size
   end
 end
