@@ -1,4 +1,5 @@
 require 'initializer'
+require 'permutations'
 
 
 module Exhaustive
@@ -35,29 +36,14 @@ module Exhaustive
 
 
   class Product
-    include Enumerable
+    include Enumerable, Permutations
 
     initialize_with :n, :ary
 
     def each(&block)
-      eval genc, binding
-    end
-
-    def genc
-      v = 'a'
-      command = ''
-      vars = []
-      for i in 0..@ary.size-1
-        command += "@ary[#{i}].exhaustive(@n).each do |#{v}|\n"
-        vars << v
-        v = v.next
-      end
-      y = vars.inject('') { |s,e| s += e + ',' }[0..-2]
-      command += "yield([#{y}])\n"
-      for i in 0..@ary.size-1
-        command += "end\n"
-      end
-      command
+      head = lambda { |v,i| "@ary[#{i}].exhaustive(@n).each do |#{v}|" }
+      yld = lambda { |y| "yield([#{y}])" }
+      eval(genc(@ary.size, head, ',', yld), binding)
     end
   end
 
