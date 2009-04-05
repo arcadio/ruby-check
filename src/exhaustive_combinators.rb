@@ -40,9 +40,24 @@ module Exhaustive
     initialize_with :n, :ary
 
     def each(&block)
-      yield(Array.new(@ary.length) do |i|
-              @ary[i].exhaustive(@n).entries.first
-            end)
+      eval genc, binding
+    end
+
+    def genc
+      v = 'a'
+      command = ''
+      vars = []
+      for i in 0..@ary.size-1
+        command += "@ary[#{i}].exhaustive(@n).each do |#{v}|\n"
+        vars << v
+        v = v.next
+      end
+      y = vars.inject('') { |s,e| s += e + ',' }[0..-2]
+      command += "yield([#{y}])\n"
+      for i in 0..@ary.size-1
+        command += "end\n"
+      end
+      command
     end
   end
 
