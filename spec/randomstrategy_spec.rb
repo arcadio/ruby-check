@@ -19,7 +19,7 @@ module RandomStrategySpec
       it_should_behave_like 'Strategy'
 
 
-      describe RandomStrategy, 'with a property that does not have any' do
+      describe RandomStrategy, 'with a property that does not have any cases' do
         def define_prop
           property :p => [String, Range] do |a, b| end
         end
