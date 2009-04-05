@@ -11,11 +11,29 @@ class String
     end
 
     def each(&block)
-      s = "a" * @n
-      for i in 0..3
-        yield(s)
-        s = s.next
+      r = (0..127).to_a.map { |e| e.chr }
+      unless @n == 0
+        eval genc, binding
+      else
+        yield('')
       end
+    end
+
+    def genc
+      v = 'a'
+      command = ''
+      vars = []
+      for i in 0..@n-1
+        command += "for #{v} in r\n"
+        vars << v
+        v = v.next
+      end
+      y = vars.inject('') { |s,e| s += e + '+' }[0..-2]
+      command += "yield(#{y})\n"
+      for i in 0..@n-1
+        command += "end\n"
+      end
+      command
     end
   end
 end
