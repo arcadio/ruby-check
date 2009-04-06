@@ -29,12 +29,21 @@ module ExhaustiveStrategySpec
 
       describe ExhaustiveStrategy, 'with a property that has many cases' do
         def define_prop
-          property :p => [String, String] do |a,b| end
+          property :p => [String] do |a| end
         end
 
         it_should_behave_like 'PropertyWithCases'
 
-        it '' do
+        it 'should generate correctly all strings of increasing sizes' do
+          @strategy.generate.should == ['']
+          @strategy.exhausted?.should be_false
+          s1 = []
+          128.times { s1 << @strategy.generate.first }
+          s1.should == (0..127).map { |c| c.chr }
+          @strategy.exhausted?.should be_false
+          @strategy.generate.should == ["\0\0"]
+          @strategy.generate.should == ["\0\1"]
+          @strategy.exhausted?.should be_false
         end
       end
     end

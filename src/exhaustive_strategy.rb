@@ -1,3 +1,4 @@
+require 'generator'
 require 'strategy'
 
 
@@ -8,50 +9,25 @@ class ExhaustiveStrategy < Strategy
 
   def set(property)
     if can
-      @depth = 0
       @tuple = product(*@property.types)
-      @resume = nil
-      @ret = nil
+      @next_depth = 0
+      set_gen
     end
+  end
+
+  def set_gen
+    @generator = Generator.new(@tuple.exhaustive(@next_depth))
+    @next_depth += 1
   end
 
   def gen
-    unless @resume
-      @resume, r = callcc do |c1|
-        @ret = c1
-        @tuple.exhaustive(@depth).each { |e| callcc { |c| @ret.call(c, e) } }
-      end
-      @depth += 1
+    if @generator.next?
+      @generator.next
     else
-      @resume, r = callcc do |c1|
-        @ret = c1
-        @resume.call
-      end
+      set_gen
+      gen
     end
-    r
   end
-
-  # tener en cuenta caso vacio
-  # def gen
-  #   if @resume
-  #     resume, result = @resume.call
-  #   else
-  #     # utilizar callcc nuevo cada vez
-  #     resume, result = callcc do |c1|
-  #       @tuple.exhaustive(@depth).each do |e|
-  #         callcc { |c2| c1.call(c2, e) }
-  #       end
-  #     end
-  #   end
-  #   if !resume.is_a?(Continuation)
-  #     @depth += 1
-  #     @resume = nil
-  #     gen
-  #   else
-  #     @resume = resume
-  #     result
-  #   end
-  # end
 
   def can
     @property.types.all? { |t| t.respond_to?(:exhaustive) }
