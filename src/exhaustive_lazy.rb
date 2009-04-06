@@ -12,7 +12,7 @@ module Enumerable
   end
 
 
-  def lazy_select(&block)
+  def lazy_apply(&block)
     LazyGenerator.new do |y|
       each do |*input|
         block.call(y, *input)
