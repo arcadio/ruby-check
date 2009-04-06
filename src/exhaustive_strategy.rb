@@ -5,6 +5,10 @@ require 'strategy'
 class ExhaustiveStrategy < Strategy
   include Exhaustive
 
+  def initialize(goal = 2)
+    @goal = goal
+  end
+
   private
 
   def set(property)
@@ -27,6 +31,7 @@ class ExhaustiveStrategy < Strategy
       set_gen
       gen
     end
+    # subir contador a mano para depth
   end
 
   def can
@@ -38,6 +43,6 @@ class ExhaustiveStrategy < Strategy
   end
 
   def pro
-    0
+    (@next_depth - 1).to_f / @goal
   end
 end
