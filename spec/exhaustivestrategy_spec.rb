@@ -27,7 +27,7 @@ module ExhaustiveStrategySpec
       end
 
 
-      describe ExhaustiveStrategy, 'with a property that has many cases' do
+      describe ExhaustiveStrategy, 'with a property that has many cases, arity=1' do
         def define_prop
           property :p => [String] do |a| end
         end
@@ -43,6 +43,28 @@ module ExhaustiveStrategySpec
           @strategy.exhausted?.should be_false
           @strategy.generate.should == ["\0\0"]
           @strategy.generate.should == ["\0\1"]
+          @strategy.exhausted?.should be_false
+        end
+      end
+
+
+      describe ExhaustiveStrategy, 'with a property that has many cases, arity =2' do
+        def define_prop
+          property :p => [String, String] do |a,b| end
+        end
+
+        it_should_behave_like 'PropertyWithCases'
+
+        it 'should generate correctly all strings of increasing sizes' do
+          @strategy.generate.should == ['', '']
+          @strategy.exhausted?.should be_false
+          @strategy.generate.should == ["\0", "\0"]
+          127.times do
+            s = @strategy.generate
+            s.first.length.should == 1
+            s.last.length.should == 1
+          end
+          @strategy.generate.should == ["\1", "\0"]
           @strategy.exhausted?.should be_false
         end
       end

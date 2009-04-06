@@ -18,5 +18,12 @@ module ExhaustiveStringSpec
       strs.size.should == 128 ** 2
       strs.each { |s| s.size.should == 2 }
     end
+
+    it 'should generate values lazily' do
+      t1 = Time.new
+      String.exhaustive(15).enum_for.next.should == "\0" * 15
+      t2 = Time.new
+      (t2 - t1).should < 1e-2
+    end
   end
 end

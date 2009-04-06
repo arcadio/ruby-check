@@ -1,6 +1,6 @@
 module Permutations
   def genc(n, head, op, yld)
-    v = 'a'
+    v = '_a00'
     command = ''
     vars = []
     for i in 0..n-1
