@@ -37,13 +37,16 @@ module ExhaustiveStrategySpec
         it 'should generate correctly all strings of increasing sizes' do
           @strategy.generate.should == ['']
           @strategy.exhausted?.should be_false
+          @strategy.progress.should == 0.5
           s1 = []
           128.times { s1 << @strategy.generate.first }
           s1.should == (0..127).map { |c| c.chr }
           @strategy.exhausted?.should be_false
+          @strategy.progress.should == 1
           @strategy.generate.should == ["\0\0"]
           @strategy.generate.should == ["\0\1"]
           @strategy.exhausted?.should be_false
+          @strategy.progress.should == 1
         end
       end
 

@@ -15,6 +15,7 @@ class ExhaustiveStrategy < Strategy
     if can
       @tuple = product(*@property.types)
       @next_depth = 0
+      @levels = 0
       set_gen
     end
   end
@@ -26,12 +27,13 @@ class ExhaustiveStrategy < Strategy
 
   def gen
     if @generator.next?
-      @generator.next
+      r = @generator.next
     else
       set_gen
-      gen
+      r = gen
     end
-    # subir contador a mano para depth
+    @levels += 1 unless @generator.next?
+    r
   end
 
   def can
@@ -43,6 +45,6 @@ class ExhaustiveStrategy < Strategy
   end
 
   def pro
-    (@next_depth - 1).to_f / @goal
+    @levels.to_f / @goal
   end
 end
