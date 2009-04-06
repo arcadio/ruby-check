@@ -6,8 +6,8 @@ require 'simplerunner'
 require 'complexrunner'
 require 'cases'
 require 'random'
+require 'exhaustive'
 require 'ui'
 
 
-include Action
-include Random
+include Action, Random, Exhaustive
