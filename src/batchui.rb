@@ -1,18 +1,15 @@
 require 'forwardable'
+require 'ui_protocol'
 
 
 class BatchUI
   extend Forwardable
+  include UIProtocol
 
   def_delegators :@output, :print, :puts
 
   def initialize(output = $stdout)
     @output = output
-  end
-
-  def update(key, value = nil)
-    params = value ? [value] : []
-    self.send(key, *params)
   end
 
   private

@@ -1,5 +1,5 @@
-require 'cases'
 require 'runner'
+require 'cases'
 
 
 class SimpleRunner < SequentialRunner

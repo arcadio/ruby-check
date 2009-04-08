@@ -1,51 +1,53 @@
 require 'curses'
 require 'progressbar'
 require 'scrollpane'
+require 'ui_protocol'
 
 
 class TextUI
-  include Curses
+  include Curses, UIProtocol
 
-  def initialize(runner)
-    @runner = runner
-    @progressbar = ProgressBar.new(runner.properties.size)
+  private
+
+  def properties(n)
+    @progressbar = ProgressBar.new(n)
     @scrollpane = ScrollPane.new
     @failures = 0
     @slash = ' '
     @property = nil
     @errorline = 4
-    update
+    refresh
     Thread.new { loop }
   end
 
-  def step_case
-    @slash = (@slash == '/' ? '\\' : '/')
-    update
-  end
-
-  def next_property(property)
+  def next(property)
     @property = property
-    update
+    refresh
   end
 
-  def success; step end
+  def step
+    @slash = (@slash == '/' ? '\\' : '/')
+    refresh
+  end
+
+  def success
+    step_p
+  end
 
   def failure(cause = nil)
     @failures += 1
     print_error("\n#{@failures}. #{@property.key} failed\n#{cause}")
-    step
+    step_p
   end
 
-  private
-
-  def update
+  def refresh
     @scrollpane.set_lines(0, status)
   end
 
-  def step
+  def step_p
     @slash = ' '
     @progressbar.step
-    update
+    refresh
     @scrollpane.close if @progressbar.full?
   end
 
