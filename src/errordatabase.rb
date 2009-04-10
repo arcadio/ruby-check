@@ -4,16 +4,42 @@ require 'sqlite3'
 
 
 class ErrorDatabase
-  attr_reader :driver
+  attr_reader :alpha, :driver
 
-  def initialize(file)
+  def initialize(file, alpha = 0.6)
+    @alpha = alpha
     @driver = SQLite3::Database.new(file, :type_translation => true)
     create_schema
-    prepare_statements
   end
 
-  def insert_error(property, input)
-    @ins.execute(property.key, Marshal.dump(input))
+  def insert_error(property, tcase)
+    k = property.key.to_s
+    m = Marshal.dump(tcase)
+    where = "WHERE property='#{k}' and tcase='#{m}'"
+      c = @driver.get_first_row("SELECT COUNT(*) FROM error #{where}").first.to_i
+    if c == 0
+      @driver.execute("INSERT INTO error VALUES ('#{k}', '#{m}', 1)")
+    else
+      p = @driver.get_first_row("SELECT probability FROM error #{where}").first
+      p = alpha + (1 - alpha ) * p
+      @driver.execute("UPDATE error SET probability=#{p} #{where}")
+    end
+
+    # insertar en base de datos
+    # si error no esta insertar
+    # si esta actualizar
+
+    # update_property excepto caso
+  end
+
+  def update_property(property)
+    # actualizar probabilidades
+
+  end
+
+  def get_cases(property)
+    @driver.execute("SELECT tcase FROM error WHERE property = '#{property.key}' " +
+                    'ORDER BY probability DESC').map { |e| Marshal.load(e.first) }
   end
 
   private
@@ -22,15 +48,12 @@ class ErrorDatabase
     sql =
 <<SQL
       CREATE TABLE IF NOT EXISTS error(
-        property VARCHAR(16) NOT NULL,
-        input BLOB NOT NULL,
-        time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        property VARCHAR(16),
+        tcase BLOB,
+        probability REAL NOT NULL,
+        PRIMARY KEY (property, tcase)
       );
 SQL
     @driver.execute_batch(sql)
-  end
-
-  def prepare_statements
-    @ins = driver.prepare('INSERT INTO error(property, input) VALUES (?, ?)')
   end
 end
