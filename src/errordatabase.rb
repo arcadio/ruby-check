@@ -1,5 +1,6 @@
 require 'property'
 require 'rubygems'
+require 'set'
 require 'sqlite3'
 
 
@@ -10,6 +11,11 @@ class ErrorDatabase
     @alpha = alpha
     @driver = SQLite3::Database.new(file, :type_translation => true)
     create_schema
+    @suc = Set[]
+  end
+
+  def insert_success(property, tcase)
+    @suc << Marshal.dump(tcase)
   end
 
   def insert_error(property, tcase)
@@ -24,17 +30,25 @@ class ErrorDatabase
       p = alpha + (1 - alpha ) * p
       @driver.execute("UPDATE error SET probability=#{p} #{where}")
     end
-
-    # insertar en base de datos
-    # si error no esta insertar
-    # si esta actualizar
-
-    # update_property excepto caso
+    update_property(property, tcase)
   end
 
-  def update_property(property)
-    # actualizar probabilidades
-
+  def update_property(property, error = nil)
+    e = Marshal.dump(error)
+    @driver.execute("SELECT * FROM error WHERE property='#{property.key}'") do |e|
+      if @suc.include?(e[1])
+        h = 0
+        p = alpha * h + (1 - alpha) * e[2]
+        @driver.execute("UPDATE error SET probability=#{p} WHERE " +
+                        "property='#{property.key}' and tcase='#{e[1]}'")
+      elsif e[1] != e
+        h = 1
+        p = alpha * h + (1 - alpha) * e[2]
+        @driver.execute("UPDATE error SET probability=#{p} WHERE " +
+                      "property='#{property.key}' and tcase='#{e[1]}'")
+      end
+    end
+    @suc = Set[]
   end
 
   def get_cases(property)

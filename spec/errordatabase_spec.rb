@@ -50,9 +50,55 @@ module ErrorDatabaseSpec
         [['p1', Marshal.dump([1, 'ab']), 1.0]]
     end
 
-    it 'should insert errors correctly when they exist'
+    it 'should not insert successful cases unless they are failures' do
+      p1 = property :p1 => [String] do |a| true end
+      p2 = property :p2 => [String] do |a| true end
+      db = ErrorDatabase.new(DB_FILE)
+      db.get_cases(p1).should == []
+      db.insert_success(p1, ['a'])
+      db.insert_success(p1, ['b'])
+      db.update_property(p1)
+      db.get_cases(p1).should == []
+      db.insert_error(p1, ['c'])
+      db.get_cases(p1).should == [['c']]
+      db.update_property(p1)
+      db.driver.execute("SELECT * FROM error").map do |e|
+        e[1] = Marshal.load(e[1])
+        e
+      end.should == [['p1', ['c'], 1.0]]
+      db.update_property(p2)
+      db.insert_error(p2, ['d'])
+      db.insert_success(p1, ['c'])
+      db.update_property(p1)
+      db.driver.execute("SELECT * FROM error ORDER BY property").map do |e|
+        e[1] = Marshal.load(e[1])
+        e
+      end.should == [['p1', ['c'], 0.4], ['p2', ['d'], 1.0]]
+    end
 
-    it 'should update data correctly'
+    it 'should work fine in a complete scenario' do
+      db = ErrorDatabase.new(DB_FILE)
+      p1 = property :p1 => [String] do |a| end
+      p2 = property :p2 => [String, String] do |a,b| end
+      db.insert_success(p1, ['a'])
+      db.insert_success(p1, ['b'])
+      db.update_property(p1)
+      db.insert_success(p2, ['a', 'b'])
+      db.update_property(p2)
+      db.insert_success(p1, ['a'])
+      db.insert_error(p1, ['b'])
+      db.insert_success(p2, ['a', 'b'])
+      db.insert_error(p2, ['c', 'd'])
+      db.insert_success(p1, ['a'])
+      db.insert_success(p1, ['b'])
+      db.update_property(p1)
+      db.update_property(p2)
+      db.update_property(p1)
+      db.driver.execute("SELECT * FROM error ORDER BY property").map do |e|
+        e[1] = Marshal.load(e[1])
+        e
+      end.should == [['p1', ['b'], 0.76], ['p2', ['c', 'd'], 1.0]]
+    end
 
     it 'should return the failing cases ordered correctly and unmarshalled' do
       p = property :p1 => [Fixnum, String] do |a,b| true end
