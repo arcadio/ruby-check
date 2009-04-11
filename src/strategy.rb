@@ -3,6 +3,10 @@ class Strategy
     @property = nil
   end
 
+  def set_runner(runner)
+    @runner = runner
+  end
+
   def set_property(property)
     @property = property
     @count = 0

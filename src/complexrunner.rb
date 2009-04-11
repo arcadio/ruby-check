@@ -1,16 +1,21 @@
+require 'errordatabase'
 require 'runner'
 require 'set'
 
 
 class ComplexRunner < SequentialRunner
-  def initialize(*strategies)
+  attr_reader :db
+
+  def initialize(db, *strategies)
+    @db = ErrorDatabase.new(db)
     @strategies = strategies
+    @strategies.each { |s| s.set_runner(self) }
   end
 
   private
 
   def check_property(p)
-    run = Set.new
+    run = Set[]
     @strategies.each { |s| s.set_property(p) }
     unless @strategies.all? { |s| s.exhausted? }
       failed = false
@@ -24,11 +29,21 @@ class ComplexRunner < SequentialRunner
             run << g
             notify_step
             failed = !eval_property(p, g)
-            break if failed
+            ## break if failed
+            if failed
+              @db.insert_error(p, g)
+              break
+            else
+              @db.insert_success(p, g)
+            end
           end
         end
       end
-      notify_success unless failed
+      ## notify_success unless failed
+      unless failed
+        @db.update_property(p)
+        notify_success
+      end
     else
       notify_failure('No test cases could be generated')
     end
