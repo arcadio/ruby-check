@@ -20,7 +20,7 @@ module ContractLanguageSpec
         end
       end
       c = Property[:'ContractLanguageSpec::Foo.bar']
-      c.types.should == [Float]
+      c.types.should == [ContractLanguageSpec::Foo, Float]
     end
 
     it 'should build a contract for a method of arity 0' do
@@ -31,7 +31,7 @@ module ContractLanguageSpec
         end
       end
       c = Property[:'ContractLanguageSpec::Foo.foobar']
-      c.types.should == []
+      c.types.should == [ContractLanguageSpec::Foo]
     end
 
     it 'should build a contract with => notation and without Array' do
@@ -42,7 +42,7 @@ module ContractLanguageSpec
         end
       end
       c = Property[:'ContractLanguageSpec::Foo.bar']
-      c.types.should == [Float]
+      c.types.should == [ContractLanguageSpec::Foo, Float]
     end
 
     it 'should reject unknown instance methods' do

@@ -9,7 +9,9 @@ module ContractSpec
     it_should_behave_like 'Property'
 
     class Foo
-      def bar(baz); end
+      def bar(baz)
+        Math.sqrt(baz)
+      end
       def foobar; end
     end
 
@@ -20,10 +22,12 @@ module ContractSpec
       postcondition = lambda { |n,r| (r ** 2 - n).abs < 1e-5 }
       c = Contract.new(METHOD, [Float], precondition, postcondition)
       c.key.should == :'ContractSpec::Foo.bar'
-      c.types.should == [Float]
+      c.types.should == [ContractSpec::Foo, Float]
       c.method.should == METHOD
       c.precondition.should == precondition
       c.postcondition.should == postcondition
+      c.call(Foo.new, 1).should be_true
+      c.call(Foo.new, -1).should be_true
     end
 
     it 'should build a complex contract' do
@@ -34,7 +38,7 @@ module ContractSpec
         ensures(&postcondition)
       end
       c.key.should == :'ContractSpec::Foo.bar'
-      c.types.should == [Float]
+      c.types.should == [ContractSpec::Foo, Float]
       c.method.should == METHOD
       c.precondition.should == precondition
       c.postcondition.should == postcondition
