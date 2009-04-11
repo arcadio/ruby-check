@@ -7,6 +7,7 @@ require 'complexrunner'
 require 'cases'
 require 'random'
 require 'exhaustive'
+require 'historic'
 require 'ui'
 
 
